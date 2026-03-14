@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Probal Khanra | Electronics Engineer",
-  description: "Portfolio of Probal Khanra - Focused on Embedded Systems, ESP32, and RTOS.",
+  description: "Portfolio of Probal Khanra - Focused on Embedded Systems and IoT.",
 };
 
 export default function RootLayout({
