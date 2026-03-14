@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Probal Khanra | Electronics Engineer",
+  title: "Probal Khanra | Electrical Engineer",
   description: "Portfolio of Probal Khanra - Focused on Embedded Systems and IoT.",
 };
 
