@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes moveGrid {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(40px); }
+}
+
+.bg-live-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: moveGrid 3s linear infinite;
+}
+
+@keyframes circuitPulse {
+  0% { opacity: 0.3; background-position: 0% 0%; }
+  50% { opacity: 0.9; background-position: 100% 100%; }
+  100% { opacity: 0.3; background-position: 0% 0%; }
+}
+
+.pcb-trace-pattern {
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(59, 130, 246, 0.5) 1.5px, transparent 0),
+    linear-gradient(to right, rgba(59, 130, 246, 0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(59, 130, 246, 0.2) 1px, transparent 1px);
+  background-size: 20px 20px, 20px 20px, 20px 20px;
+}
