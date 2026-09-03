@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Terminal, X, Minimize2, Maximize2 } from 'lucide-react';
+import { Terminal, X, Minimize2, Maximize2, GripHorizontal } from 'lucide-react';
 import { SYSTEM_CONFIG, PROJECTS, CORE_SKILLS, CERTIFICATES } from '../registry';
 
 interface CommandOutput {
@@ -10,10 +10,36 @@ interface CommandOutput {
   result: React.ReactNode;
 }
 
-export default function ProbalTerminal({ isDark }: { isDark: boolean }) {
-  const [isOpen, setIsOpen] = useState(false);
+interface ProbalTerminalProps {
+  isDark: boolean;
+  isOpen?: boolean;
+  setIsOpen?: (val: boolean) => void;
+  hideFloatingTrigger?: boolean;
+}
+
+const CHIP_ASCII = `    |  |  |  |  |
+  .---------------.
+  | +-----------+ |
+= | | PROBAL-EE | | =
+= | | ESP32-S3  | | =
+= | | RTOS CORE | | =
+  | +-----------+ |
+  '---------------'
+    |  |  |  |  |`;
+
+export default function ProbalTerminal({ isDark, isOpen: extIsOpen, setIsOpen: extSetIsOpen, hideFloatingTrigger }: ProbalTerminalProps) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const isOpen = extIsOpen !== undefined ? extIsOpen : internalIsOpen;
+  const setIsOpen = extSetIsOpen || setInternalIsOpen;
   const [isMinimized, setIsMinimized] = useState(false);
   const [input, setInput] = useState('');
+
+  // DRAGGING STATE & REFS
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
+
   const [history, setHistory] = useState<CommandOutput[]>([
     {
       id: 'welcome',
@@ -21,19 +47,15 @@ export default function ProbalTerminal({ isDark }: { isDark: boolean }) {
       result: (
         <div className="space-y-1 text-xs font-mono">
           <p className="text-emerald-400 font-bold">probal@bcrec-ee:~$ neofetch</p>
-          <div className="flex gap-4 items-start pt-1">
-            <div className="text-blue-400 font-bold hidden sm:block leading-tight text-[10px]">
-              {`  /\\_/\\
- ( o.o )
-  > ^ <
- [EE-OS]`
-              }
+          <div className="flex gap-3 sm:gap-4 items-start pt-1">
+            <div className="text-emerald-400 font-bold hidden sm:block leading-tight text-[9px] select-none font-mono">
+              <pre className="m-0">{CHIP_ASCII}</pre>
             </div>
             <div className="space-y-0.5 text-zinc-300 text-[11px]">
-              <p><span className="text-blue-400 font-bold">OS:</span> Probal Linux 6.8.0-ee x86_64</p>
-              <p><span className="text-blue-400 font-bold">Host:</span> BCREC Electrical Engineering Workstation</p>
-              <p><span className="text-blue-400 font-bold">Kernel:</span> Embedded ESP32-S3 + RTOS Kernel</p>
-              <p><span className="text-blue-400 font-bold">Focus:</span> {SYSTEM_CONFIG.currentFocus}</p>
+              <p><span className="text-emerald-400 font-bold">OS:</span> Probal Linux 6.8.0-ee x86_64</p>
+              <p><span className="text-emerald-400 font-bold">Host:</span> BCREC Electrical Engineering Workstation</p>
+              <p><span className="text-emerald-400 font-bold">Kernel:</span> Embedded ESP32-S3 + RTOS Kernel</p>
+              <p><span className="text-emerald-400 font-bold">Focus:</span> {SYSTEM_CONFIG.currentFocus}</p>
               <p className="text-zinc-500 pt-1">Type <span className="text-amber-400 font-bold">'help'</span> or <span className="text-amber-400 font-bold">'ls'</span> for commands.</p>
             </div>
           </div>
@@ -45,12 +67,108 @@ export default function ProbalTerminal({ isDark }: { isDark: boolean }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // MOUSE DRAG HANDLER
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    if (!terminalRef.current) return;
+
+    const rect = terminalRef.current.getBoundingClientRect();
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: position ? position.x : rect.left,
+      initialY: position ? position.y : rect.top
+    };
+    setIsDragging(true);
+  };
+
+  // TOUCH DRAG HANDLER (MOBILE / TABLET)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    if (!terminalRef.current || e.touches.length !== 1) return;
+
+    const touch = e.touches[0];
+    const rect = terminalRef.current.getBoundingClientRect();
+    dragRef.current = {
+      startX: touch.clientX,
+      startY: touch.clientY,
+      initialX: position ? position.x : rect.left,
+      initialY: position ? position.y : rect.top
+    };
+    setIsDragging(true);
+  };
+
+  // DRAG MOVEMENT LISTENER
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragRef.current || !terminalRef.current) return;
+      const deltaX = e.clientX - dragRef.current.startX;
+      const deltaY = e.clientY - dragRef.current.startY;
+      const width = terminalRef.current.offsetWidth || 400;
+      const height = terminalRef.current.offsetHeight || 300;
+
+      const newX = Math.max(8, Math.min(window.innerWidth - width - 8, dragRef.current.initialX + deltaX));
+      const newY = Math.max(8, Math.min(window.innerHeight - height - 8, dragRef.current.initialY + deltaY));
+
+      setPosition({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+      dragRef.current = null;
+      setIsDragging(false);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!dragRef.current || !terminalRef.current || e.touches.length !== 1) return;
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - dragRef.current.startX;
+      const deltaY = touch.clientY - dragRef.current.startY;
+      const width = terminalRef.current.offsetWidth || 400;
+      const height = terminalRef.current.offsetHeight || 300;
+
+      const newX = Math.max(8, Math.min(window.innerWidth - width - 8, dragRef.current.initialX + deltaX));
+      const newY = Math.max(8, Math.min(window.innerHeight - height - 8, dragRef.current.initialY + deltaY));
+
+      setPosition({ x: newX, y: newY });
+    };
+
+    const handleTouchEnd = () => {
+      dragRef.current = null;
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchmove', handleTouchMove, { passive: true });
+      window.addEventListener('touchend', handleTouchEnd);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isDragging]);
+
   useEffect(() => {
     if (isOpen && !isMinimized) {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
       inputRef.current?.focus();
     }
-  }, [history, isOpen, isMinimized]);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [history, isOpen, isMinimized, setIsOpen]);
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,10 +270,17 @@ export default function ProbalTerminal({ isDark }: { isDark: boolean }) {
 
       case 'neofetch':
         res = (
-          <div className="space-y-1 text-xs font-mono text-zinc-300">
-            <p><span className="text-blue-400 font-bold">User:</span> {SYSTEM_CONFIG.name} @ BCREC</p>
-            <p><span className="text-blue-400 font-bold">Focus:</span> {SYSTEM_CONFIG.currentFocus}</p>
-            <p><span className="text-blue-400 font-bold">Uptime:</span> 3rd Year (2024 - 2028)</p>
+          <div className="flex gap-3 sm:gap-4 items-start pt-1 text-xs font-mono">
+            <div className="text-emerald-400 font-bold hidden sm:block leading-tight text-[9px] select-none font-mono">
+              <pre className="m-0">{CHIP_ASCII}</pre>
+            </div>
+            <div className="space-y-0.5 text-zinc-300 text-[11px]">
+              <p><span className="text-emerald-400 font-bold">User:</span> {SYSTEM_CONFIG.name} @ BCREC</p>
+              <p><span className="text-emerald-400 font-bold">OS:</span> Probal Linux 6.8.0-ee x86_64</p>
+              <p><span className="text-emerald-400 font-bold">Hardware:</span> ESP32-S3 Dual-Core Xtensa LX7</p>
+              <p><span className="text-emerald-400 font-bold">Focus:</span> {SYSTEM_CONFIG.currentFocus}</p>
+              <p><span className="text-emerald-400 font-bold">Uptime:</span> 3rd Year Electrical Engineering</p>
+            </div>
           </div>
         );
         break;
@@ -177,8 +302,9 @@ export default function ProbalTerminal({ isDark }: { isDark: boolean }) {
     setInput('');
   };
 
-  // FLOATING TRIGGER BUTTON (ICON ONLY - SLEEK FLOATING SHELL ICON)
+  // FLOATING TRIGGER BUTTON (IF NOT CONTROLLED EXTERNALLY)
   if (!isOpen) {
+    if (hideFloatingTrigger) return null;
     return (
       <button
         onClick={() => setIsOpen(true)}
@@ -196,42 +322,85 @@ export default function ProbalTerminal({ isDark }: { isDark: boolean }) {
   }
 
   return (
-    <div className={`fixed z-50 transition-all ${
-      isMinimized 
-        ? 'bottom-6 right-6 w-72' 
-        : 'bottom-6 right-6 w-[92vw] sm:w-[480px] h-[370px]'
-    }`}>
-      <div className="w-full h-full rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden flex flex-col font-mono bg-[#121212]/95 backdrop-blur-md">
-        {/* LINUX TERMINAL HEADER BAR */}
-        <div className="bg-[#1e1e1e] border-b border-zinc-800 px-4 py-2.5 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1.5">
-              <button onClick={() => setIsOpen(false)} className="w-3 h-3 rounded-full bg-rose-500 hover:bg-rose-600 inline-block transition-colors" title="Close" />
-              <button onClick={() => setIsMinimized(!isMinimized)} className="w-3 h-3 rounded-full bg-amber-500 hover:bg-amber-600 inline-block transition-colors" title="Minimize" />
-              <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-            </div>
-            <span className="text-zinc-300 font-bold text-[11px] ml-2 flex items-center gap-1.5">
-              <Terminal size={14} className="text-emerald-400" /> probal@bcrec-ee: ~ (bash)
-            </span>
-          </div>
+    <>
+      {/* FULLPAGE BACKDROP: CLICK ANYWHERE TO CLOSE */}
+      {!isMinimized && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px] cursor-pointer transition-opacity animate-in fade-in duration-200"
+          onClick={() => setIsOpen(false)}
+          title="Click anywhere outside to close console"
+          aria-label="Close terminal overlay"
+        />
+      )}
 
-          <div className="flex items-center gap-1 text-zinc-400">
-            <button 
-              onClick={() => setIsMinimized(!isMinimized)} 
-              className="p-1 hover:text-white rounded"
-              title={isMinimized ? "Expand" : "Minimize"}
-            >
-              {isMinimized ? <Maximize2 size={13} /> : <Minimize2 size={13} />}
-            </button>
-            <button 
-              onClick={() => setIsOpen(false)} 
-              className="p-1 hover:text-white rounded"
-              title="Close Terminal"
-            >
-              <X size={14} />
-            </button>
+      <div 
+        ref={terminalRef}
+        className={`fixed z-50 transition-all ${
+          isMinimized 
+            ? 'w-72' 
+            : 'w-[94vw] sm:w-[500px] h-[390px]'
+        } ${!position ? (isMinimized ? 'bottom-6 right-6' : 'bottom-4 sm:bottom-6 right-3 sm:right-6') : ''}`}
+        style={position ? {
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          right: 'auto',
+          bottom: 'auto',
+          transition: isDragging ? 'none' : undefined
+        } : undefined}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-full h-full rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden flex flex-col font-mono bg-[#121212]/95 backdrop-blur-md">
+          {/* LINUX TERMINAL HEADER BAR (DRAGGABLE) */}
+          <div 
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+            className="bg-[#1e1e1e] border-b border-zinc-800 px-4 py-3 flex items-center justify-between text-xs select-none cursor-grab active:cursor-grabbing"
+            title="Drag to move terminal window"
+          >
+            <div className="flex items-center gap-2">
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setIsOpen(false)} 
+                  className="w-3.5 h-3.5 rounded-full bg-rose-500 hover:bg-rose-600 inline-block transition-transform active:scale-90" 
+                  title="Close Terminal" 
+                />
+                <button 
+                  onClick={() => setIsMinimized(!isMinimized)} 
+                  className="w-3.5 h-3.5 rounded-full bg-amber-500 hover:bg-amber-600 inline-block transition-transform active:scale-90" 
+                  title="Minimize" 
+                />
+                <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block" />
+              </div>
+              <span className="text-zinc-300 font-bold text-[11px] ml-2 flex items-center gap-1.5 pointer-events-none">
+                <Terminal size={14} className="text-emerald-400" /> probal@bcrec-ee: ~ (bash)
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* Drag Handle Indicator */}
+              <div className="hidden sm:flex items-center gap-1 text-zinc-600 pointer-events-none">
+                <GripHorizontal size={14} />
+              </div>
+
+              <div className="flex items-center gap-1.5 text-zinc-400">
+                <button 
+                  onClick={() => setIsMinimized(!isMinimized)} 
+                  className="p-1.5 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  title={isMinimized ? "Expand" : "Minimize"}
+                >
+                  {isMinimized ? <Maximize2 size={15} /> : <Minimize2 size={15} />}
+                </button>
+                <button 
+                  onClick={() => setIsOpen(false)} 
+                  className="p-1.5 hover:text-white hover:bg-rose-500/20 text-zinc-300 hover:text-rose-300 rounded-lg transition-colors flex items-center gap-1 font-bold text-xs"
+                  title="Close Terminal (or click anywhere outside / press Esc)"
+                  aria-label="Close Terminal"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
 
         {/* LINUX TERMINAL BODY */}
         {!isMinimized && (
@@ -270,5 +439,6 @@ export default function ProbalTerminal({ isDark }: { isDark: boolean }) {
         )}
       </div>
     </div>
-  );
+  </>
+);
 }

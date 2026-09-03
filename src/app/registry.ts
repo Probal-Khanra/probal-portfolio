@@ -1,9 +1,12 @@
 export const SYSTEM_CONFIG = {
-  name: "Probal",
-  location: "Durgapur, WB",
-  tagline: "Electrical Engineering student at BCREC. Designing embedded systems, custom PCBs, and 3D hardware.",
+  name: "Probal Khanra",
+  shortName: "Probal",
+  location: "Durgapur, West Bengal",
+  college: "Dr. B. C. Roy Engineering College",
+  tagline: "Electrical Engineering student designing embedded systems, custom PCBs, and functional 3D hardware.",
+  bio: "I'm a 3rd-year Electrical Engineering student at BCREC. I enjoy working at the intersection of circuits and code: routing custom PCBs in KiCad, writing firmware for ESP32 and microcontrollers, and 3D printing functional enclosures to turn ideas into tangible hardware.",
   currentFocus: "3D CAD Modeling & PCB Design",
-  profileImage: "/profile.png",
+  profileImage: "/profile.jpg",
   resumeUrl: "/resume.pdf",
   email: "probalkhanra2006@email.com",
   github: "https://github.com/Probal-Khanra",
@@ -15,8 +18,10 @@ export interface ProjectItem {
   title: string;
   tech: string;
   repo: string;
+  liveUrl?: string;
   manifest: string[];
   description: string;
+  highlights?: string[];
   architecture: string;
   bom: { component: string; spec: string; qty: number; reason: string }[];
   pinouts: { pin: string; target: string; bus: string }[];
@@ -24,129 +29,101 @@ export interface ProjectItem {
 }
 
 export const PROJECTS: ProjectItem[] = [
-  { 
-    id: "mesh-node",
-    title: "Autonomous Mesh Node", 
-    tech: "ESP32 / PCB Design",
-    repo: "https://github.com/probal-khanra/mesh-node",
-    manifest: ["ESP32-S3", "SX1276 LoRa", "BME280"],
-    status: "Prototype Stage",
-    description: "Low-power decentralized Mesh node capable of multi-hop telemetry transmission across remote field environments without cellular coverage.",
-    architecture: "Dual-core Xtensa LX7 MCU driving a SPI-interfaced LoRa RF transceiver operating at 915MHz with adaptive data rate (ADR) and AES-128 payload encryption.",
-    bom: [
-      { component: "ESP32-S3 Microcontroller", spec: "ESP32-S3-WROOM-1 (N8R8)", qty: 1, reason: "Handles mesh node routing logic and encryption processing." },
-      { component: "SX1276 LoRa Module (915MHz)", spec: "SX1276 LoRa Transceiver", qty: 1, reason: "Enables long-range low-power RF telemetry up to 10+ km." },
-      { component: "BME280 Sensor", spec: "Temperature/Humidity/Barometric", qty: 1, reason: "Samples environmental climate parameters for telemetry data." },
-      { component: "TP4056 + DW01A PMIC", spec: "LiPo Charger & Overdischarge Shield", qty: 1, reason: "Manages solar battery charging and voltage protection." }
-    ],
-    pinouts: [
-      { pin: "GPIO 10", target: "SX1276 NSS", bus: "SPI" },
-      { pin: "GPIO 11", target: "SX1276 MOSI", bus: "SPI" },
-      { pin: "GPIO 12", target: "SX1276 MISO", bus: "SPI" },
-      { pin: "GPIO 13", target: "SX1276 SCK", bus: "SPI" },
-      { pin: "GPIO 41", target: "BME280 SDA", bus: "I2C" },
-      { pin: "GPIO 42", target: "BME280 SCL", bus: "I2C" }
-    ]
-  },
-  { 
-    id: "robotic-gripper",
-    title: "Robotic Gripper", 
-    tech: "3D Modeling / Python",
-    repo: "https://github.com/probal-khanra/gripper",
-    manifest: ["MG996R Servos", "PCA9685", "Python SDK"],
-    status: "Fabricated",
-    description: "Parametric 3-DOF robotic manipulator featuring compliance control, custom CAD-modeled linkages, and serial servo control via Python.",
-    architecture: "Custom Fusion 360 parametric CAD assembly optimized for 3D printing. Driven via I2C-controlled 16-channel PCA9685 PWM controller coupled with high-torque servos.",
-    bom: [
-      { component: "TowerPro MG996R Servos", spec: "High-Torque Metal Gear Servo", qty: 3, reason: "Provides metallic gear force for heavy end-effector actuation." },
-      { component: "PCA9685 PWM Driver", spec: "16-Channel 12-bit I2C Controller", qty: 1, reason: "Offloads precise servo PWM timing signal orchestration from MCU." },
-      { component: "PETG 3D Printed Frame", spec: "Fusion 360 Parametric Assembly", qty: 1, reason: "Custom lightweight heat-resistant structural linkages." },
-      { component: "5V 5A DC-DC Buck Converter", spec: "Step-Down Regulator", qty: 1, reason: "Delivers stable high-current DC power to prevent brownouts." }
-    ],
-    pinouts: [
-      { pin: "SDA (GPIO 21)", target: "PCA9685 SDA", bus: "I2C" },
-      { pin: "SCL (GPIO 22)", target: "PCA9685 SCL", bus: "I2C" },
-      { pin: "PWM 0", target: "Base Rotation Servo", bus: "PWM" },
-      { pin: "PWM 1", target: "Arm Elevation Servo", bus: "PWM" },
-      { pin: "PWM 2", target: "Gripper Actuator Servo", bus: "PWM" }
-    ]
-  },
-  { 
-    id: "power-monitor",
-    title: "Lab Power Monitor", 
-    tech: "Next.js / IoT",
-    repo: "https://github.com/probal-khanra/power-monitor",
-    manifest: ["ACS712 Sensor", "ESP32", "MQTT"],
+  {
+    id: "smart-air-quality",
+    title: "Smart Air Quality Monitoring Unit",
+    tech: "ESP32 · React & TypeScript · KiCad · IoT",
+    repo: "https://github.com/Probal-Khanra/SmartAirQualityMonitoringUnit",
+    liveUrl: "https://aerosenseaqm.netlify.app/",
+    manifest: ["ESP32", "PMS5003", "MQ-2", "MQ-7", "AHT20B", "IP5306", "Firebase", "Google Sheets"],
     status: "Completed",
-    description: "Real-time electrical power telemetry system tracking AC current consumption, active power, RMS voltage drift, and harmonic disturbance in workshop setups.",
-    architecture: "Hall-effect ACS712 current sensing coupled with precision OP-AMP signal conditioning, sampled via ESP32 ADC, calibrated with RMS algorithms, and streamed over MQTT.",
+    description: "A portable, battery-powered ambient air monitor built with an ESP32. It measures airborne particulates (PM1.0, PM2.5, PM10), carbon monoxide, combustible gases, and climate conditions, streaming live readings to a real-time web dashboard.",
+    highlights: [
+      "Engineered a portable ambient air monitor powered by an ESP32 dual-core MCU and internal 18650 Li-ion cell with IP5306 power management.",
+      "Samples laser particle counters (PM1.0, PM2.5, PM10) over UART, along with MQ-2 & MQ-7 gas sensors via calibrated analog ADC channels.",
+      "Streams real-time JSON telemetry over Wi-Fi to Firebase Realtime DB every 30s and logs 5-minute historical datasets to Google Sheets via serverless Google Apps Script.",
+      "Renders live environmental metrics locally on an I2C HD44780 LCD display and remotely on a responsive React web dashboard."
+    ],
+    architecture: "The ESP32 runs non-blocking firmware sampling the PMS5003 laser sensor over UART, gas sensors via calibrated analog ADC channels, and climate metrics over I2C. Telemetry is transmitted over Wi-Fi to Firebase Realtime DB every 30 seconds, and a serverless Google Apps Script logs 5-minute historical records to Google Sheets. The unit operates portably via an internal 18650 Li-ion cell managed by an IP5306 power SoC.",
     bom: [
-      { component: "ACS712 Current Sensor", spec: "20A Hall-Effect Module", qty: 1, reason: "Measures non-invasive AC load current via magnetic field." },
-      { component: "ZMPT101B Voltage Transformer", spec: "AC Active Phase Transformer", qty: 1, reason: "Steps down high AC voltage safely for MCU ADC sampling." },
-      { component: "ESP32-WROOM MCU", spec: "Dual-Core Xtensa 240MHz", qty: 1, reason: "Calculates real-time RMS calculations and streams over MQTT." },
-      { component: "OLED SSD1306 Display", spec: "0.96 inch I2C Display", qty: 1, reason: "Renders live voltage and wattage figures on physical box." }
+      { component: "ESP32 Microcontroller", spec: "32-bit Dual-Core MCU (Wi-Fi, Hardware UART, I2C, ADC)", qty: 1, reason: "Handles multi-tasking sensor polling, 16x2 LCD rendering, and Wi-Fi JSON telemetry transmission." },
+      { component: "PMS5003 Dust Sensor", spec: "Laser Scattering Particle Counter (UART Serial)", qty: 1, reason: "Measures PM1.0, PM2.5, and PM10 airborne particulate concentration." },
+      { component: "MQ-2 Gas Sensor", spec: "Metal-Oxide Semiconductor (Analog ADC)", qty: 1, reason: "Detects LPG, propane, and combustible smoke levels." },
+      { component: "MQ-7 Gas Sensor", spec: "Electrochemical MOS Sensor (Analog ADC)", qty: 1, reason: "Dedicated precision monitoring for Carbon Monoxide (CO) concentration." },
+      { component: "AHT20B Climate Sensor", spec: "Digital Temp & Humidity (I2C Bus)", qty: 1, reason: "High-precision ambient temperature (°C) and relative humidity (%RH) measurements." },
+      { component: "16x2 Character LCD", spec: "HD44780 Display (I2C Interface)", qty: 1, reason: "Provides on-device real-time visual parameter rendering." },
+      { component: "IP5306 Power SoC", spec: "5V/2A Boost & Li-ion Battery Management", qty: 1, reason: "Integrates 18650 cell charging and 5V boost conversion on a single IC, eliminating external MT3608 modules and enabling pass-through USB power." },
+      { component: "18650 Li-Ion Cell", spec: "3.7V Rechargeable Battery", qty: 1, reason: "Provides high-capacity portable power for field deployment." }
     ],
     pinouts: [
-      { pin: "GPIO 34 (ADC1_CH6)", target: "ACS712 VOUT", bus: "Analog In" },
-      { pin: "GPIO 35 (ADC1_CH7)", target: "ZMPT101B VOUT", bus: "Analog In" },
-      { pin: "GPIO 21", target: "OLED SSD1306 SDA", bus: "I2C" },
-      { pin: "GPIO 22", target: "OLED SSD1306 SCL", bus: "I2C" }
+      { pin: "UART RX/TX (GPIO 16/17)", target: "PMS5003 Serial Data", bus: "UART" },
+      { pin: "GPIO 34 (ADC1_CH6)", target: "MQ-2 Gas Sensor VOUT", bus: "Analog In" },
+      { pin: "GPIO 35 (ADC1_CH7)", target: "MQ-7 CO Sensor VOUT", bus: "Analog In" },
+      { pin: "GPIO 21 (SDA)", target: "AHT20B & LCD SDA", bus: "I2C" },
+      { pin: "GPIO 22 (SCL)", target: "AHT20B & LCD SCL", bus: "I2C" }
     ]
-  }
+  },
 ];
 
 export const CORE_SKILLS = [
-  { name: "ESP32 & Embedded C++", category: "Microcontrollers" },
-  { name: "KiCad & EasyEDA", category: "PCB Design" },
-  { name: "Fusion 360", category: "3D CAD Modeling" },
-  { name: "3D Printing & Enclosures", category: "Rapid Prototyping" },
-  { name: "Python & IoT Protocols", category: "Firmware & Cloud" }
+  { skill: "PCB Design", software: "KiCad & EasyEDA", name: "PCB Design", category: "KiCad & EasyEDA", icon: "layers" },
+  { skill: "3D CAD Modeling", software: "Fusion 360", name: "3D CAD Modeling", category: "Fusion 360", icon: "box" },
+  { skill: "Embedded Systems", software: "ESP32 & Embedded C++", name: "Embedded Systems", category: "ESP32 & C++", icon: "cpu" },
+  { skill: "Rapid Prototyping", software: "3D Printing & Enclosures", name: "Rapid Prototyping", category: "3D Printing", icon: "printer" },
+  { skill: "IoT & Telemetry", software: "Python & IoT Protocols", name: "IoT & Telemetry", category: "Python & MQTT", icon: "terminal" }
 ];
 
 export const EDUCATION_TIMELINE = [
   {
     id: "bcrec",
     degree: "B.Tech — Electrical Engineering",
-    institution: "BCREC (Dr. B.C. Roy Engineering College)",
+    institution: "BCREC (Dr. B.C. Roy Engineering College), Durgapur",
     year: "2024 — 2028",
-    status: "3rd Year (Ongoing)",
+    status: "Ongoing",
     highlights: [
       "Embedded Systems & Microcontrollers",
       "Circuit Analysis & Network Theory",
       "Power Electronics & Machines",
-      "Digital Signal Processing"
+      "Sensor Interfacing & Digital Logic"
     ]
   },
   {
-    id: "self-taught",
-    degree: "Self-Taught — Hardware & Embedded",
-    institution: "Online / Project-Based Learning",
-    year: "2022 — Present",
-    status: "Active",
+    id: "hs-automobile",
+    degree: "Higher Secondary (10+2) — Vocational Stream (Automobile)",
+    institution: "Anandanagar A. C. Roy High School, Singur, Hooghly, WB",
+    year: "2022 — 2024",
+    status: "Completed",
     highlights: [
-      "ESP32 & STM32 Firmware Development",
-      "Custom PCB Design (KiCad & EasyEDA)",
-      "3D CAD Modeling (Fusion 360)",
-      "IoT Protocol Stack (MQTT, LoRa, BLE)"
+      "Automobile Systems & Mechanics",
+      "Applied Engineering & Workshop Technology",
+      "Vehicle Electricals & Diagnostics",
+      "Technical Drawing & CAD"
+    ]
+  },
+  {
+    id: "secondary",
+    degree: "Secondary Education (10th Standard)",
+    institution: "Anandanagar A. C. Roy High School, Singur, Hooghly, WB",
+    year: "2020 — 2022",
+    status: "Completed",
+    highlights: [
+      "Physical Science & Mechanics",
+      "Mathematics & Geometry",
+      "General Science & Engineering Fundamentals"
     ]
   }
 ];
 
 export const WORKBENCH_TOOLS = [
-  { name: "Soldering Iron", desc: "Through-hole & SMD rework" },
-  { name: "Digital Multimeter", desc: "Voltage, current & continuity testing" },
-  { name: "Lab Power Supply", desc: "Regulated DC bench power" },
-  { name: "Breadboards & Jumpers", desc: "Rapid circuit prototyping" },
-  { name: "Wire Strippers", desc: "Precision wire prep & cutting" },
-  { name: "Hot Glue Gun", desc: "Enclosure assembly & component securing" }
+  { name: "Soldering Iron", desc: "Precision soldering station & SMD rework", icon: "flame" },
+  { name: "Digital Multimeter", desc: "Voltage, current & continuity testing", icon: "activity" },
+  { name: "DIY Power Supply", desc: "Regulated variable DC bench power", icon: "zap" }
 ];
 
 export const SOFTWARE_STACK = [
-  { name: "Vercel", category: "Cloud Hosting", desc: "Next.js & Frontend CD/CI deployments" },
-  { name: "Netlify", category: "Cloud Hosting", desc: "Static site hosting & serverless functions" },
-  { name: "Firebase", category: "Backend / Database", desc: "Firestore, Realtime DB & Auth services" },
-  { name: "Affinity Suite", category: "Design & Vector", desc: "Affinity Designer & Photo for visual design" },
-  { name: "Canva", category: "Graphics", desc: "Rapid UI mockups & graphic asset creation" }
+  { name: "Vercel", category: "Cloud Hosting", desc: "Next.js & Frontend CD/CI deployments", icon: "cloud" },
+  { name: "Firebase", category: "Backend / Database", desc: "Firestore, Realtime DB & Auth services", icon: "database" },
+  { name: "Affinity Suite", category: "Design & Vector", desc: "Affinity Designer & Photo for visual design", icon: "palette" }
 ];
 
 export interface CertificateItem {
@@ -157,6 +134,10 @@ export interface CertificateItem {
   credentialId?: string;
   skills: string[];
   linkedinUrl: string;
+  pdfUrl?: string;
+  imageUrl?: string;
+  gradeOrType?: string;
+  verificationUrl?: string;
 }
 
 export const CERTIFICATES: CertificateItem[] = [
@@ -164,10 +145,13 @@ export const CERTIFICATES: CertificateItem[] = [
     id: "cert-pcb-aict",
     title: "Workshop on PCB & Circuit Design",
     issuer: "AICT Pvt. Ltd.",
-    issued: "Feb 2026",
+    issued: "Feb 2024",
     credentialId: "061",
-    skills: ["PCB Design", "EasyEDA", "Schematics"],
-    linkedinUrl: "https://www.linkedin.com/in/probal-khanra/details/certifications/"
+    skills: ["PCB Design", "EasyEDA", "Schematics", "Circuit Prototyping"],
+    linkedinUrl: "https://www.linkedin.com/in/probal-khanra/details/certifications/",
+    gradeOrType: "Industrial Workshop Certificate",
+    pdfUrl: "/certificates/pcb-design-aict.pdf",
+    imageUrl: "/certificates/pcb-design-aict.jpg"
   },
   {
     id: "cert-cdac-3d",
@@ -175,8 +159,11 @@ export const CERTIFICATES: CertificateItem[] = [
     issuer: "C-DAC (Centre for Development of Advanced Computing)",
     issued: "Mar 2026",
     credentialId: "C-DAC(K)/2026/TRG/160H/OF/WB(05)/3DAM/0150",
-    skills: ["3D Printing", "Additive Manufacturing", "Prototyping"],
-    linkedinUrl: "https://www.linkedin.com/in/probal-khanra/details/certifications/"
+    skills: ["3D Printing", "Additive Manufacturing", "Prototyping", "CAD"],
+    linkedinUrl: "https://www.linkedin.com/in/probal-khanra/details/certifications/",
+    gradeOrType: "Advanced Government Training (160 Hours)",
+    pdfUrl: "/certificates/cdac-3d-printing.pdf",
+    imageUrl: "/certificates/cdac-3d-printing.jpg"
   },
   {
     id: "cert-udemy-esp32",
@@ -184,7 +171,11 @@ export const CERTIFICATES: CertificateItem[] = [
     issuer: "Udemy",
     issued: "Dec 2025",
     credentialId: "UC-a55dee90-c359-4572-a33e-d609c809cc4c",
-    skills: ["ESP32 Microcontrollers", "MicroPython"],
-    linkedinUrl: "https://www.linkedin.com/in/probal-khanra/details/certifications/"
+    skills: ["ESP32 Microcontrollers", "MicroPython", "Embedded Systems", "IoT"],
+    linkedinUrl: "https://www.linkedin.com/in/probal-khanra/details/certifications/",
+    gradeOrType: "Technical Specialization Certificate (11 Hours)",
+    pdfUrl: "/certificates/udemy-micropython-esp32.pdf",
+    imageUrl: "/certificates/udemy-micropython-esp32.jpg",
+    verificationUrl: "https://ude.my/UC-a55dee90-c359-4572-a33e-d609c809cc4c"
   }
 ];

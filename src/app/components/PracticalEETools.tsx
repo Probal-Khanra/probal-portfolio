@@ -187,134 +187,167 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
 
   return (
     <section className="space-y-8 w-full">
-      {/* SECTION HEADER */}
-      <div className={`flex flex-wrap justify-between items-end gap-4 border-b pb-6 ${isDark ? 'border-zinc-800' : 'border-zinc-200'}`}>
+      {/* MINIMAL WORKBENCH HEADER */}
+      <div className={`flex flex-wrap justify-between items-center gap-2 border-b pb-4 ${isDark ? 'border-zinc-800' : 'border-zinc-200'}`}>
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold flex items-center gap-1.5">
-            <Wrench size={14} /> Practical Workbench Utilities
-          </span>
-          <h2 className={`text-3xl font-bold tracking-tight mt-1 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
-            Engineering Utilities & Calculators
+          <h2 className={`text-xl sm:text-2xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+            Workbench Tools
           </h2>
+          <p className="text-xs text-zinc-500">Precision electronics engineering calculators & simulators</p>
         </div>
-        <p className={`text-xs max-w-md ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
-          Adjust dials and parameters on the left to inspect real-time circuit schematics, chip decoders, and battery simulations on the right.
-        </p>
       </div>
 
-      {/* TOOL TAB SELECTOR (6 TOOLS) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+      {/* MINIMAL RESPONSIVE TOOL TAB DOCK (LABELS UNDER ICONS) */}
+      <div className={`p-1.5 rounded-2xl border backdrop-blur-xl grid grid-cols-3 sm:grid-cols-6 gap-1.5 transition-all ${
+        isDark ? 'bg-zinc-900/80 border-zinc-800' : 'bg-white/80 border-zinc-200 shadow-sm'
+      }`}>
         <button
           onClick={() => setActiveTab('divider')}
-          className={`p-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 text-center ${
+          className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
             activeTab === 'divider'
-              ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
+              ? isDark 
+                ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
               : isDark 
-              ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-              : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 shadow-sm'
+                ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
           }`}
         >
-          <Calculator size={18} />
-          <span>Voltage Divider</span>
+          <Calculator size={18} className={activeTab === 'divider' ? 'text-white' : ''} />
+          <span className="text-[11px] font-medium tracking-tight">Divider</span>
         </button>
 
         <button
           onClick={() => setActiveTab('resistor')}
-          className={`p-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 text-center ${
+          className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
             activeTab === 'resistor'
-              ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
+              ? isDark 
+                ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
               : isDark 
-              ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-              : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 shadow-sm'
+                ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
           }`}
         >
-          <Sliders size={18} />
-          <span>Through-Hole Resistor</span>
+          <Sliders size={18} className={activeTab === 'resistor' ? 'text-white' : ''} />
+          <span className="text-[11px] font-medium tracking-tight">Resistor</span>
         </button>
 
         <button
           onClick={() => setActiveTab('smd')}
-          className={`p-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 text-center ${
+          className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
             activeTab === 'smd'
-              ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
+              ? isDark 
+                ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
               : isDark 
-              ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-              : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 shadow-sm'
+                ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
           }`}
         >
-          <HardDrive size={18} />
-          <span>SMD Chip Decoder</span>
+          <HardDrive size={18} className={activeTab === 'smd' ? 'text-white' : ''} />
+          <span className="text-[11px] font-medium tracking-tight">SMD Chip</span>
         </button>
 
         <button
           onClick={() => setActiveTab('battery')}
-          className={`p-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 text-center ${
+          className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
             activeTab === 'battery'
-              ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
+              ? isDark 
+                ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
               : isDark 
-              ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-              : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 shadow-sm'
+                ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
           }`}
         >
-          <Battery size={18} />
-          <span>IoT Battery Life</span>
+          <Battery size={18} className={activeTab === 'battery' ? 'text-white' : ''} />
+          <span className="text-[11px] font-medium tracking-tight">Battery</span>
         </button>
 
         <button
           onClick={() => setActiveTab('logic')}
-          className={`p-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 text-center ${
+          className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
             activeTab === 'logic'
-              ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
+              ? isDark 
+                ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
               : isDark 
-              ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-              : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 shadow-sm'
+                ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
           }`}
         >
-          <Binary size={18} />
-          <span>Logic Gate Simulator</span>
+          <Binary size={18} className={activeTab === 'logic' ? 'text-white' : ''} />
+          <span className="text-[11px] font-medium tracking-tight">Logic</span>
         </button>
 
         <button
           onClick={() => setActiveTab('ohms')}
-          className={`p-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 text-center ${
+          className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
             activeTab === 'ohms'
-              ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
+              ? isDark 
+                ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
               : isDark 
-              ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-              : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 shadow-sm'
+                ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
           }`}
         >
-          <Zap size={18} />
-          <span>Ohm&apos;s Law & Power</span>
+          <Zap size={18} className={activeTab === 'ohms' ? 'text-white' : ''} />
+          <span className="text-[11px] font-medium tracking-tight">Ohm&apos;s Law</span>
         </button>
       </div>
 
       {/* FULL-WIDTH 2-COLUMN SPLIT CONTAINER */}
-      <div className={`p-6 md:p-8 rounded-3xl border transition-all ${
+      <div className={`p-4 sm:p-8 rounded-2xl sm:rounded-3xl border transition-all ${
         isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
       }`}>
         {/* =========================================================================
            TOOL 1: VOLTAGE DIVIDER CALCULATOR
            ========================================================================= */}
         {activeTab === 'divider' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="space-y-5">
               <div>
                 <h3 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  <Calculator size={20} className="text-blue-500" /> Voltage Divider Dials
+                  <Calculator size={20} className="text-white" /> Voltage Divider Calculator
                 </h3>
-                <p className="text-xs text-gray-400 mt-1">Configure input voltage VIN and resistor divider network (R1, R2).</p>
+                <p className="text-xs text-zinc-400 mt-1">Configure input voltage VIN and resistor divider network (R1, R2).</p>
+              </div>
+
+              {/* Quick Presets */}
+              <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl border bg-white/[0.02] border-white/10 text-xs">
+                <span className="text-[11px] font-bold text-zinc-500 mr-1">Presets:</span>
+                {[
+                  { name: '5V → 3.3V', pVin: 5, pR1: 1700, pR2: 3300 },
+                  { name: '12V → 5V', pVin: 12, pR1: 14000, pR2: 10000 },
+                  { name: '5V → 1.8V', pVin: 5, pR1: 3200, pR2: 1800 },
+                  { name: '24V → 5V', pVin: 24, pR1: 38000, pR2: 10000 },
+                  { name: '1:2 Halver', pVin: 5, pR1: 10000, pR2: 10000 },
+                ].map((p) => (
+                  <button
+                    key={p.name}
+                    onClick={() => { setVin(p.pVin); setR1(p.pR1); setR2(p.pR2); }}
+                    className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all ${
+                      vin === p.pVin && r1 === p.pR1 && r2 === p.pR2
+                        ? 'bg-white border-white text-zinc-950 font-bold'
+                        : 'bg-white/5 border-white/10 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {p.name}
+                  </button>
+                ))}
               </div>
 
               <div className="space-y-2 p-4 rounded-2xl border bg-white/[0.02] border-white/10">
                 <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-blue-400">Input Voltage VIN:</span>
+                  <span className="text-zinc-300">Input Voltage VIN:</span>
                   <span className="font-mono text-sm">{vin.toFixed(1)} V</span>
                 </div>
                 <input
                   type="range" min="1" max="400" step="1" value={vin}
                   onChange={(e) => setVin(parseFloat(e.target.value) || 0)}
-                  className="w-full accent-blue-500 cursor-pointer h-2 bg-gray-700 rounded-lg"
+                  className="w-full accent-white cursor-pointer h-2 bg-gray-700 rounded-lg"
                 />
                 <input
                   type="number" step="0.1" max="1000" value={vin}
@@ -328,13 +361,13 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
 
               <div className="space-y-2 p-4 rounded-2xl border bg-white/[0.02] border-white/10">
                 <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-blue-400">Resistor R1 (Upper):</span>
+                  <span className="text-zinc-300">Resistor R1 (Upper):</span>
                   <span className="font-mono text-sm">{formatResistance(r1)}</span>
                 </div>
                 <input
                   type="range" min="1" max="1000000" step="500" value={r1}
                   onChange={(e) => setR1(parseFloat(e.target.value) || 0)}
-                  className="w-full accent-blue-500 cursor-pointer h-2 bg-gray-700 rounded-lg"
+                  className="w-full accent-white cursor-pointer h-2 bg-gray-700 rounded-lg"
                 />
                 <input
                   type="number" value={r1}
@@ -365,21 +398,21 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
               </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-6">
+            <div className="space-y-6">
               <div className={`p-6 rounded-3xl border ${isDark ? 'bg-black/60 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
-                <span className="text-xs font-mono uppercase font-bold text-blue-400 mb-4 block flex items-center gap-1.5">
+                <span className="text-xs font-mono uppercase font-bold text-zinc-300 mb-4 block flex items-center gap-1.5">
                   <Eye size={14} /> Interactive Voltage Divider Schematic
                 </span>
 
                 <div className="w-full flex justify-center py-2">
                   <svg width="340" height="260" viewBox="0 0 340 260" className="w-full h-auto max-w-sm">
-                    <circle cx="170" cy="24" r="7" fill="#3b82f6" />
-                    <text x="170" y="14" fill="#3b82f6" fontSize="13" fontWeight="bold" textAnchor="middle">VIN ({vin}V)</text>
-                    <line x1="170" y1="31" x2="170" y2="55" stroke="#3b82f6" strokeWidth="3" />
+                    <circle cx="170" cy="24" r="7" fill="#ffffff" />
+                    <text x="170" y="14" fill="#ffffff" fontSize="13" fontWeight="bold" textAnchor="middle">VIN ({vin}V)</text>
+                    <line x1="170" y1="31" x2="170" y2="55" stroke="#ffffff" strokeWidth="3" />
 
-                    <rect x="140" y="55" width="60" height="50" rx="8" fill={isDark ? "#172554" : "#dbeafe"} stroke="#3b82f6" strokeWidth="2.5" />
-                    <text x="170" y="76" fill={isDark ? "#93c5fd" : "#1e40af"} fontSize="12" fontWeight="bold" textAnchor="middle">R1</text>
-                    <text x="170" y="92" fill={isDark ? "#bfdbfe" : "#1d4ed8"} fontSize="11" textAnchor="middle">{formatResistance(r1)}</text>
+                    <rect x="140" y="55" width="60" height="50" rx="8" fill={isDark ? "#27272a" : "#f4f4f5"} stroke="#ffffff" strokeWidth="2.5" />
+                    <text x="170" y="76" fill={isDark ? "#ffffff" : "#09090b"} fontSize="12" fontWeight="bold" textAnchor="middle">R1</text>
+                    <text x="170" y="92" fill={isDark ? "#d4d4d8" : "#27272a"} fontSize="11" textAnchor="middle">{formatResistance(r1)}</text>
 
                     <line x1="170" y1="105" x2="170" y2="155" stroke="#10b981" strokeWidth="3.5" />
                     <circle cx="170" cy="130" r="6" fill="#10b981" />
@@ -405,11 +438,13 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <div className={`p-5 rounded-2xl border ${isDark ? 'bg-black/40 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                   <span className="text-xs font-mono uppercase text-gray-400 font-bold block">Output Voltage (VOUT):</span>
                   <div className="text-3xl font-extrabold text-emerald-500 font-mono mt-1">{vout.toFixed(2)} V</div>
+                  <span className="text-[10px] text-zinc-400 font-mono mt-1 block">Ratio: {(vout / (vin || 1)).toFixed(3)} × VIN</span>
                 </div>
 
                 <div className={`p-5 rounded-2xl border ${isDark ? 'bg-black/40 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                   <span className="text-xs font-mono uppercase text-gray-400 font-bold block">Current Draw:</span>
-                  <div className="text-3xl font-extrabold text-blue-500 font-mono mt-1">{dividerCurrentMa.toFixed(3)} mA</div>
+                  <div className="text-3xl font-extrabold text-white font-mono mt-1">{dividerCurrentMa.toFixed(3)} mA</div>
+                  <span className="text-[10px] text-zinc-400 font-mono mt-1 block">Power: {(vin * (dividerCurrentMa / 1000) * 1000).toFixed(1)} mW</span>
                 </div>
               </div>
             </div>
@@ -420,15 +455,15 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
            TOOL 2: THROUGH-HOLE RESISTOR DECODER
            ========================================================================= */}
         {activeTab === 'resistor' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-6 space-y-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="space-y-5">
               <div className="flex justify-between items-center border-b pb-3 border-white/10">
                 <h3 className={`text-base font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  <Sliders size={18} className="text-blue-500" /> Color Band Dials
+                  <Sliders size={18} className="text-white" /> Color Band Dials
                 </h3>
                 <div className="flex gap-2">
-                  <button onClick={() => setNumBands(4)} className={`px-3 py-1 rounded-xl border text-xs font-bold ${numBands === 4 ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-400'}`}>4-Band</button>
-                  <button onClick={() => setNumBands(5)} className={`px-3 py-1 rounded-xl border text-xs font-bold ${numBands === 5 ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-400'}`}>5-Band</button>
+                  <button onClick={() => setNumBands(4)} className={`px-3 py-1 rounded-xl border text-xs font-bold transition-all ${numBands === 4 ? 'bg-white text-zinc-950 shadow' : 'bg-white/5 text-gray-400'}`}>4-Band</button>
+                  <button onClick={() => setNumBands(5)} className={`px-3 py-1 rounded-xl border text-xs font-bold transition-all ${numBands === 5 ? 'bg-white text-zinc-950 shadow' : 'bg-white/5 text-gray-400'}`}>5-Band</button>
                 </div>
               </div>
 
@@ -437,7 +472,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <label className="text-xs font-bold text-gray-400 block">Band 1 (1st Digit):</label>
                 <div className="grid grid-cols-5 gap-1 text-xs">
                   {digitColors.map((c) => (
-                    <button key={c.val} onClick={() => setBand1(c.val)} className={`p-1.5 rounded-lg border font-semibold flex flex-col items-center ${band1 === c.val ? 'ring-2 ring-blue-500 font-bold scale-105' : 'opacity-80'}`} style={{ backgroundColor: c.hex, color: c.text }}>
+                    <button key={c.val} onClick={() => setBand1(c.val)} className={`p-1.5 rounded-lg border font-semibold flex flex-col items-center transition-all ${band1 === c.val ? 'ring-2 ring-white font-bold scale-105' : 'opacity-80'}`} style={{ backgroundColor: c.hex, color: c.text }}>
                       <span>{c.val}</span>
                     </button>
                   ))}
@@ -449,7 +484,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <label className="text-xs font-bold text-gray-400 block">Band 2 (2nd Digit):</label>
                 <div className="grid grid-cols-5 gap-1 text-xs">
                   {digitColors.map((c) => (
-                    <button key={c.val} onClick={() => setBand2(c.val)} className={`p-1.5 rounded-lg border font-semibold flex flex-col items-center ${band2 === c.val ? 'ring-2 ring-blue-500 font-bold scale-105' : 'opacity-80'}`} style={{ backgroundColor: c.hex, color: c.text }}>
+                    <button key={c.val} onClick={() => setBand2(c.val)} className={`p-1.5 rounded-lg border font-semibold flex flex-col items-center transition-all ${band2 === c.val ? 'ring-2 ring-white font-bold scale-105' : 'opacity-80'}`} style={{ backgroundColor: c.hex, color: c.text }}>
                       <span>{c.val}</span>
                     </button>
                   ))}
@@ -461,7 +496,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                   <label className="text-xs font-bold text-gray-400 block">Band 3 (3rd Digit):</label>
                   <div className="grid grid-cols-5 gap-1 text-xs">
                     {digitColors.map((c) => (
-                      <button key={c.val} onClick={() => setBand3(c.val)} className={`p-1.5 rounded-lg border font-semibold flex flex-col items-center ${band3 === c.val ? 'ring-2 ring-blue-500 font-bold scale-105' : 'opacity-80'}`} style={{ backgroundColor: c.hex, color: c.text }}>
+                      <button key={c.val} onClick={() => setBand3(c.val)} className={`p-1.5 rounded-lg border font-semibold flex flex-col items-center transition-all ${band3 === c.val ? 'ring-2 ring-white font-bold scale-105' : 'opacity-80'}`} style={{ backgroundColor: c.hex, color: c.text }}>
                         <span>{c.val}</span>
                       </button>
                     ))}
@@ -474,8 +509,20 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <label className="text-xs font-bold text-gray-400 block">Multiplier Band:</label>
                 <div className="grid grid-cols-5 gap-1 text-xs">
                   {multiplierColors.map((m, idx) => (
-                    <button key={idx} onClick={() => setMultiplier(m.pow)} className={`p-1.5 rounded-lg border font-semibold text-center ${multiplier === m.pow ? 'ring-2 ring-blue-500 scale-105' : 'opacity-80'}`} style={{ backgroundColor: m.hex, color: m.text }}>
+                    <button key={idx} onClick={() => setMultiplier(m.pow)} className={`p-1.5 rounded-lg border font-semibold text-center transition-all ${multiplier === m.pow ? 'ring-2 ring-white scale-105' : 'opacity-80'}`} style={{ backgroundColor: m.hex, color: m.text }}>
                       <span className="text-[10px] block truncate">{m.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tolerance */}
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-400 block">Tolerance Band:</label>
+                <div className="grid grid-cols-4 gap-1 text-xs">
+                  {toleranceColors.map((t, idx) => (
+                    <button key={idx} onClick={() => setTolerance(t.tol)} className={`p-1.5 rounded-lg border font-semibold text-center transition-all ${tolerance === t.tol ? 'ring-2 ring-white scale-105 font-bold' : 'opacity-80'}`} style={{ backgroundColor: t.hex, color: t.text }}>
+                      <span className="text-[10px] block truncate">{t.label}</span>
                     </button>
                   ))}
                 </div>
@@ -483,7 +530,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
             </div>
 
             {/* RIGHT SIDE: RESISTOR GRAPHIC WITH EMBEDDED TEXT */}
-            <div className="lg:col-span-6 space-y-6">
+            <div className="space-y-6">
               <div className={`p-8 rounded-3xl border flex flex-col items-center justify-center ${isDark ? 'bg-black/60 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                 <span className="text-xs font-mono uppercase font-bold text-gray-400 mb-6 flex items-center gap-1.5">
                   <Eye size={14} /> Resistor Rings Visualizer
@@ -537,7 +584,12 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
 
               <div className={`p-6 rounded-2xl border text-center ${isDark ? 'bg-black/40 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                 <span className="text-xs font-mono uppercase text-gray-400 font-bold block">Total Resistance Value:</span>
-                <div className="text-4xl font-extrabold text-blue-500 font-mono mt-1">{formatResistance(rawResistance)}</div>
+                <div className="text-4xl font-extrabold text-white font-mono mt-1">{formatResistance(rawResistance)}</div>
+                <div className="flex justify-center items-center gap-4 text-xs font-mono text-zinc-400 mt-2">
+                  <span>Tolerance: ±{tolerance}%</span>
+                  <span>•</span>
+                  <span>Range: {formatResistance(rawResistance * (1 - tolerance / 100))} - {formatResistance(rawResistance * (1 + tolerance / 100))}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -547,17 +599,35 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
            TOOL 3: SMD CHIP RESISTOR DECODER
            ========================================================================= */}
         {activeTab === 'smd' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="space-y-5">
               <div>
                 <h3 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  <HardDrive size={20} className="text-blue-500" /> SMD Marking Decoder
+                  <HardDrive size={20} className="text-white" /> SMD Marking Decoder
                 </h3>
-                <p className="text-xs text-gray-400 mt-1">Enter 3-digit, 4-digit, or EIA-96 codes printed on surface-mount chip components.</p>
+                <p className="text-xs text-zinc-400 mt-1">Enter 3-digit, 4-digit, or EIA-96 codes printed on surface-mount chip components.</p>
+              </div>
+
+              {/* Quick Sample Code Chips */}
+              <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl border bg-white/[0.02] border-white/10 text-xs">
+                <span className="text-[11px] font-bold text-zinc-500 mr-1">Examples:</span>
+                {['103', '4701', '4R7', '01A', '68C', 'R05'].map((code) => (
+                  <button
+                    key={code}
+                    onClick={() => setSmdCode(code)}
+                    className={`px-2.5 py-1 rounded-lg border font-mono text-[11px] font-semibold transition-all ${
+                      smdCode.toUpperCase() === code
+                        ? 'bg-white border-white text-zinc-950 font-bold'
+                        : 'bg-white/5 border-white/10 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {code}
+                  </button>
+                ))}
               </div>
 
               <div className="space-y-2 p-4 rounded-2xl border bg-white/[0.02] border-white/10">
-                <label className="text-xs font-bold text-gray-400 block">SMD Resistor Marking Code:</label>
+                <label className="text-xs font-bold text-zinc-300 block">SMD Resistor Marking Code:</label>
                 <input
                   type="text"
                   maxLength={6}
@@ -570,18 +640,18 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 />
               </div>
 
-              <div className="space-y-2 text-xs text-gray-400 leading-relaxed">
-                <p className="font-bold text-blue-400">Supported Formats:</p>
+              <div className="space-y-2 text-xs text-zinc-400 leading-relaxed p-4 rounded-2xl border bg-white/[0.02] border-white/10">
+                <p className="font-bold text-zinc-200">Supported Formats:</p>
                 <ul className="list-disc pl-4 space-y-1 font-mono text-[11px]">
-                  <li><strong className="text-white">3-Digit (5%):</strong> e.g. <code className="text-yellow-400">103</code> = 10kΩ</li>
-                  <li><strong className="text-white">4-Digit (1%):</strong> e.g. <code className="text-yellow-400">4701</code> = 4.7kΩ</li>
-                  <li><strong className="text-white">R-Decimal:</strong> e.g. <code className="text-yellow-400">4R7</code> = 4.7Ω, <code className="text-yellow-400">R05</code> = 0.05Ω</li>
-                  <li><strong className="text-white">EIA-96 (1%):</strong> e.g. <code className="text-yellow-400">01A</code> = 100Ω, <code className="text-yellow-400">68C</code> = 49.9kΩ</li>
+                  <li><strong className="text-white">3-Digit (5%):</strong> e.g. <code className="text-amber-400">103</code> = 10kΩ</li>
+                  <li><strong className="text-white">4-Digit (1%):</strong> e.g. <code className="text-amber-400">4701</code> = 4.7kΩ</li>
+                  <li><strong className="text-white">R-Decimal:</strong> e.g. <code className="text-amber-400">4R7</code> = 4.7Ω, <code className="text-amber-400">R05</code> = 0.05Ω</li>
+                  <li><strong className="text-white">EIA-96 (1%):</strong> e.g. <code className="text-amber-400">01A</code> = 100Ω, <code className="text-amber-400">68C</code> = 49.9kΩ</li>
                 </ul>
               </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-6">
+            <div className="space-y-6">
               <div className={`p-8 rounded-3xl border flex flex-col items-center justify-center ${isDark ? 'bg-black/60 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                 <span className="text-xs font-mono uppercase font-bold text-gray-400 mb-6 flex items-center gap-1.5">
                   <Eye size={14} /> 0805 Surface-Mount Chip Resistor
@@ -607,7 +677,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
               <div className={`p-6 rounded-2xl border text-center ${isDark ? 'bg-black/40 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                 <span className="text-xs font-mono uppercase text-gray-400 font-bold block">Decoded Resistance:</span>
                 <div className="text-4xl font-extrabold text-emerald-500 font-mono mt-1">{smdResult.text}</div>
-                <span className="text-xs font-semibold text-blue-400 mt-1 block">Tolerance: {smdResult.tol}</span>
+                <span className="text-xs font-semibold text-zinc-300 mt-1 block">Tolerance: {smdResult.tol}</span>
               </div>
             </div>
           </div>
@@ -617,13 +687,13 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
            TOOL 4: BATTERY LIFE & POWER CONSUMPTION ESTIMATOR (SIMPLIFIED & HUMAN)
            ========================================================================= */}
         {activeTab === 'battery' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {/* LEFT SIDE: CONTROLS */}
-            <div className="lg:col-span-5 space-y-5">
+            <div className="space-y-5">
               <div className="flex justify-between items-center border-b pb-3 border-white/10">
                 <div>
                   <h3 className={`text-base font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    <Battery size={18} className="text-blue-500" /> Battery Life Estimator
+                    <Battery size={18} className="text-white" /> Battery Life Estimator
                   </h3>
                   <p className="text-xs text-gray-400 mt-0.5">Calculate how long your battery will power your project.</p>
                 </div>
@@ -634,7 +704,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <button
                   onClick={() => setBatMode('simple')}
                   className={`py-2 rounded-lg text-xs font-bold transition-all ${
-                    batMode === 'simple' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'
+                    batMode === 'simple' ? 'bg-white text-zinc-950 font-bold shadow' : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   ⚡ Simple Continuous Mode
@@ -642,7 +712,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <button
                   onClick={() => setBatMode('iot')}
                   className={`py-2 rounded-lg text-xs font-bold transition-all ${
-                    batMode === 'iot' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'
+                    batMode === 'iot' ? 'bg-white text-zinc-950 font-bold shadow' : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   💤 Smart IoT Sleep Mode
@@ -652,13 +722,13 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
               {/* 1. BATTERY CAPACITY INPUT */}
               <div className="space-y-2 p-4 rounded-2xl border bg-white/[0.02] border-white/10">
                 <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-blue-400">1. Battery Capacity (mAh):</span>
+                  <span className="text-zinc-300">1. Battery Capacity (mAh):</span>
                   <span className="font-mono text-sm">{batCapacity} mAh</span>
                 </div>
                 <input
                   type="range" min="50" max="20000" step="50" value={batCapacity}
                   onChange={(e) => setBatCapacity(parseFloat(e.target.value) || 100)}
-                  className="w-full accent-blue-500 cursor-pointer h-2 bg-gray-700 rounded-lg"
+                  className="w-full accent-white cursor-pointer h-2 bg-gray-700 rounded-lg"
                 />
                 <input
                   type="number" min="1" max="500000" value={batCapacity}
@@ -682,7 +752,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                       onClick={() => setBatCapacity(p.mah)}
                       className={`px-2 py-0.5 rounded-lg border text-[10px] font-bold transition-all ${
                         batCapacity === p.mah
-                          ? 'bg-blue-600 border-blue-500 text-white'
+                          ? 'bg-white border-white text-zinc-950 font-bold'
                           : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
                       }`}
                     >
@@ -748,7 +818,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
             </div>
 
             {/* RIGHT SIDE: CLEAN BATTERY GRAPHIC VISUALIZER */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="space-y-6">
               <div className={`p-8 rounded-3xl border flex flex-col items-center justify-center ${
                 isDark ? 'bg-black/60 border-white/10' : 'bg-slate-50 border-slate-300'
               }`}>
@@ -759,8 +829,8 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <div className="w-full max-w-md flex justify-center py-4">
                   <svg width="280" height="130" viewBox="0 0 280 130" className="w-full h-auto">
                     {/* Outer Battery Body */}
-                    <rect x="20" y="25" width="220" height="80" rx="12" fill="none" stroke="#3b82f6" strokeWidth="4" />
-                    <rect x="240" y="48" width="16" height="34" rx="4" fill="#3b82f6" />
+                    <rect x="20" y="25" width="220" height="80" rx="12" fill="none" stroke="#ffffff" strokeWidth="4" />
+                    <rect x="240" y="48" width="16" height="34" rx="4" fill="#ffffff" />
 
                     {/* Battery Fill Gauge */}
                     <rect x="28" y="33" width="204" height="64" rx="8" fill="#10b981" opacity="0.85" />
@@ -777,7 +847,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className={`p-5 rounded-2xl border ${isDark ? 'bg-black/40 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                   <span className="text-xs font-mono uppercase text-gray-400 font-bold block">Total Usable Capacity:</span>
-                  <div className="text-3xl font-extrabold text-blue-500 font-mono mt-1">{(batCapacity * 0.85).toFixed(0)} mAh</div>
+                  <div className="text-3xl font-extrabold text-white font-mono mt-1">{(batCapacity * 0.85).toFixed(0)} mAh</div>
                   <span className="text-[10px] text-gray-400 font-mono mt-1 block">(85% safe discharge limit)</span>
                 </div>
 
@@ -801,13 +871,13 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
            TOOL 5: INTERACTIVE LOGIC GATE SIMULATOR & TRUTH TABLE
            ========================================================================= */}
         {activeTab === 'logic' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5 space-y-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="space-y-5">
               <div>
                 <h3 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  <Binary size={20} className="text-blue-500" /> Digital Logic Gates
+                  <Binary size={20} className="text-white" /> Digital Logic Gates
                 </h3>
-                <p className="text-xs text-gray-400 mt-1">Toggle input switches (0/1) and gate logic.</p>
+                <p className="text-xs text-zinc-400 mt-1">Toggle input switches (0/1) and gate logic.</p>
               </div>
 
               <div className="space-y-2">
@@ -817,16 +887,16 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                     <div className="flex gap-1.5">
                       <button
                         onClick={() => setNumGateInputs(2)}
-                        className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-bold ${
-                          numGateInputs === 2 ? 'bg-blue-600 text-white border-blue-500' : 'bg-white/5 text-gray-400 border-white/10'
+                        className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-bold transition-all ${
+                          numGateInputs === 2 ? 'bg-white text-zinc-950 border-white' : 'bg-white/5 text-gray-400 border-white/10'
                         }`}
                       >
                         2-Inputs
                       </button>
                       <button
                         onClick={() => setNumGateInputs(3)}
-                        className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-bold ${
-                          numGateInputs === 3 ? 'bg-blue-600 text-white border-blue-500' : 'bg-white/5 text-gray-400 border-white/10'
+                        className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-bold transition-all ${
+                          numGateInputs === 3 ? 'bg-white text-zinc-950 border-white' : 'bg-white/5 text-gray-400 border-white/10'
                         }`}
                       >
                         3-Inputs
@@ -839,7 +909,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                     <button
                       key={g}
                       onClick={() => setGateType(g as any)}
-                      className={`py-2 rounded-xl border text-xs font-bold ${gateType === g ? 'bg-blue-600 text-white border-blue-500' : 'bg-white/5 text-gray-300'}`}
+                      className={`py-2 rounded-xl border text-xs font-bold transition-all ${gateType === g ? 'bg-white text-zinc-950 border-white' : 'bg-white/5 text-gray-300'}`}
                     >
                       {g}
                     </button>
@@ -884,7 +954,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
               </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-6">
+            <div className="space-y-6">
               <div className={`p-8 rounded-3xl border flex flex-col items-center justify-center ${isDark ? 'bg-black/60 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                 <span className="text-xs font-mono uppercase font-bold text-gray-400 mb-6 flex items-center gap-1.5">
                   <Eye size={14} /> Logic Gate Signal Wire Visualizer ({gateType !== 'NOT' ? `${numGateInputs}-Input Mode` : '1-Input Mode'})
@@ -916,9 +986,9 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                     )}
 
                     {/* Gate Symbol Box */}
-                    <rect x="130" y="20" width="85" height="110" rx="16" fill={isDark ? '#1e293b' : '#cbd5e1'} stroke="#3b82f6" strokeWidth="3" />
-                    <text x="172" y="72" fill="#3b82f6" fontSize="17" fontWeight="extrabold" textAnchor="middle">{gateType}</text>
-                    <text x="172" y="90" fill="#64748b" fontSize="10" fontWeight="bold" textAnchor="middle">{gateType !== 'NOT' ? `${numGateInputs}-Input` : 'Inverter'}</text>
+                    <rect x="130" y="20" width="85" height="110" rx="16" fill={isDark ? '#27272a' : '#e4e4e7'} stroke="#ffffff" strokeWidth="2.5" />
+                    <text x="172" y="72" fill="#ffffff" fontSize="17" fontWeight="extrabold" textAnchor="middle">{gateType}</text>
+                    <text x="172" y="90" fill="#a1a1aa" fontSize="10" fontWeight="bold" textAnchor="middle">{gateType !== 'NOT' ? `${numGateInputs}-Input` : 'Inverter'}</text>
 
                     {/* Output Wire Q */}
                     <line x1="215" y1="75" x2="290" y2="75" stroke={gateOutput ? '#10b981' : '#ef4444'} strokeWidth="5" />
@@ -942,22 +1012,45 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
            TOOL 6: OHM'S LAW & POWER (DYNAMIC CIRCUIT SIMULATION VISUALIZER)
            ========================================================================= */}
         {activeTab === 'ohms' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {/* LEFT SIDE: INPUT DIALS */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="space-y-5">
               <div>
                 <h3 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  <Zap size={20} className="text-blue-500" /> Voltage & Current Dials
+                  <Zap size={20} className="text-white" /> Voltage & Current Dials
                 </h3>
-                <p className="text-xs text-gray-400 mt-1">Adjust Voltage (V) and Current (I) to see dynamic circuit electron flow.</p>
+                <p className="text-xs text-zinc-400 mt-1">Adjust Voltage (V) and Current (I) to see dynamic circuit electron flow.</p>
+              </div>
+
+              {/* Quick Circuit Presets */}
+              <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl border bg-white/[0.02] border-white/10 text-xs">
+                <span className="text-[11px] font-bold text-zinc-500 mr-1">Presets:</span>
+                {[
+                  { name: '3.3V MCU', v: '3.3', i: '0.02' },
+                  { name: '5V USB', v: '5', i: '0.5' },
+                  { name: '12V Relay', v: '12', i: '0.1' },
+                  { name: '24V Sensor', v: '24', i: '0.02' },
+                ].map((p) => (
+                  <button
+                    key={p.name}
+                    onClick={() => { setVolts(p.v); setAmps(p.i); }}
+                    className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all ${
+                      volts === p.v && amps === p.i
+                        ? 'bg-white border-white text-zinc-950 font-bold'
+                        : 'bg-white/5 border-white/10 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {p.name}
+                  </button>
+                ))}
               </div>
 
               <div className="space-y-2 p-4 rounded-2xl border bg-white/[0.02] border-white/10">
                 <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-blue-400">Voltage (V):</span>
+                  <span className="text-zinc-300">Voltage (V):</span>
                   <span className="font-mono text-sm">{vNum} V</span>
                 </div>
-                <input type="range" min="0.5" max="400" step="1" value={vNum} onChange={(e) => setVolts(e.target.value)} className="w-full accent-blue-500 cursor-pointer h-2 bg-gray-700 rounded-lg" />
+                <input type="range" min="0.5" max="400" step="1" value={vNum} onChange={(e) => setVolts(e.target.value)} className="w-full accent-white cursor-pointer h-2 bg-gray-700 rounded-lg" />
                 <input type="number" step="0.1" value={volts} onChange={(e) => setVolts(e.target.value)} className={`w-full p-2.5 rounded-xl border font-mono text-xs font-bold ${isDark ? 'bg-black border-white/10 text-white' : 'bg-slate-100 border-slate-300'}`} placeholder="Enter voltage up to 1000V..." />
               </div>
 
@@ -972,7 +1065,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
             </div>
 
             {/* RIGHT SIDE: ANIMATED CLOSED-LOOP CIRCUIT VISUALIZER */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="space-y-6">
               <div className={`p-8 rounded-3xl border flex flex-col items-center justify-center ${isDark ? 'bg-black/60 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                 <span className="text-xs font-mono uppercase font-bold text-gray-400 mb-4 flex items-center gap-1.5">
                   <Eye size={14} /> Live Circuit & Current Flow Simulation
@@ -981,14 +1074,14 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
                 <div className="w-full max-w-md flex justify-center py-2">
                   <svg width="340" height="220" viewBox="0 0 340 220" className="w-full h-auto">
                     {/* Main Closed Loop Wire */}
-                    <rect x="40" y="30" width="260" height="150" rx="16" fill="none" stroke="#3b82f6" strokeWidth="4" />
+                    <rect x="40" y="30" width="260" height="150" rx="16" fill="none" stroke="#ffffff" strokeWidth="3" />
 
                     {/* DC Battery Source Symbol (Left Wire) */}
                     <g>
-                      <line x1="40" y1="90" x2="40" y2="70" stroke="#3b82f6" strokeWidth="6" />
-                      <line x1="30" y1="80" x2="50" y2="80" stroke="#3b82f6" strokeWidth="4" />
-                      <line x1="34" y1="95" x2="46" y2="95" stroke="#3b82f6" strokeWidth="3" />
-                      <text x="15" y="90" fill="#60a5fa" fontSize="13" fontWeight="extrabold" textAnchor="end">+{vNum}V</text>
+                      <line x1="40" y1="90" x2="40" y2="70" stroke="#ffffff" strokeWidth="6" />
+                      <line x1="30" y1="80" x2="50" y2="80" stroke="#ffffff" strokeWidth="4" />
+                      <line x1="34" y1="95" x2="46" y2="95" stroke="#ffffff" strokeWidth="3" />
+                      <text x="15" y="90" fill="#ffffff" fontSize="13" fontWeight="extrabold" textAnchor="end">+{vNum}V</text>
                     </g>
 
                     {/* Resistor Block (Top Wire) */}
@@ -1004,8 +1097,8 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
 
                     {/* Center Power Readout Badge */}
                     <g>
-                      <rect x="110" y="85" width="120" height="40" rx="10" fill={isDark ? "#172554" : "#dbeafe"} stroke="#3b82f6" strokeWidth="2" />
-                      <text x="170" y="103" fill="#60a5fa" fontSize="10" fontWeight="bold" textAnchor="middle">POWER DISSIPATION</text>
+                      <rect x="110" y="85" width="120" height="40" rx="10" fill={isDark ? "#27272a" : "#f4f4f5"} stroke="#ffffff" strokeWidth="2" />
+                      <text x="170" y="103" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle">POWER DISSIPATION</text>
                       <text x="170" y="118" fill="#34d399" fontSize="12" fontWeight="extrabold" textAnchor="middle">{pNum} Watts</text>
                     </g>
                   </svg>
@@ -1015,7 +1108,7 @@ export default function PracticalEETools({ isDark }: PracticalEEToolsProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className={`p-5 rounded-2xl border ${isDark ? 'bg-black/40 border-white/10' : 'bg-slate-50 border-slate-300'}`}>
                   <span className="text-xs font-mono uppercase text-gray-400 font-bold block">Calculated Resistance R:</span>
-                  <div className="text-3xl font-extrabold text-blue-500 font-mono mt-1">{rNum} Ω</div>
+                  <div className="text-3xl font-extrabold text-white font-mono mt-1">{rNum} Ω</div>
                   <span className="text-[10px] text-gray-400 font-mono mt-1 block">Formula: R = V / I</span>
                 </div>
 

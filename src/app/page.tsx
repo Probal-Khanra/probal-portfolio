@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Github, 
   Linkedin, 
@@ -12,49 +13,194 @@ import {
   Sun, 
   Moon, 
   X, 
-  Gamepad2,
+  FileText, 
+  MapPin, 
+  Layers, 
+  Cpu, 
+  Box, 
+  Printer, 
+  Terminal, 
+  Flame, 
+  Activity, 
+  Zap, 
+  Cloud, 
+  Database, 
+  Palette, 
+  Gamepad2, 
   Wrench,
-  FileText,
-  Cloud,
-  Tv,
-  Palette,
   Sparkles,
-  Layers,
-  MapPin
+  GraduationCap,
+  FolderGit2,
+  FileDown,
+  Mail,
+  Globe,
+  Bot
 } from 'lucide-react';
-// Importing dashboard data and types
-import { PROJECTS, CORE_SKILLS, SYSTEM_CONFIG, ProjectItem, EDUCATION_TIMELINE, WORKBENCH_TOOLS, SOFTWARE_STACK, CERTIFICATES } from './registry';
+
+import { 
+  SYSTEM_CONFIG, 
+  PROJECTS, 
+  CORE_SKILLS, 
+  EDUCATION_TIMELINE, 
+  WORKBENCH_TOOLS, 
+  SOFTWARE_STACK, 
+  CERTIFICATES,
+  ProjectItem,
+  CertificateItem 
+} from './registry';
 import ProbalTerminal from './components/ProbalTerminal';
 
-interface IParticle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  update: (w: number, h: number) => void;
+interface TechItem {
+  name: string;
+  logo: React.ReactNode;
 }
 
+const TECH_STACK: TechItem[] = [
+  {
+    name: "C / C++",
+    logo: <span className="w-5 h-5 rounded-md bg-white text-black font-bold font-mono text-[9px] flex items-center justify-center shrink-0 select-none">C++</span>
+  },
+  {
+    name: "Python",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0 fill-current" viewBox="0 0 24 24">
+        <path d="M11.9 2c-3.1 0-4.9 1.4-4.9 3.4v2.5h5v.8H5.6C3.6 8.7 2 10.3 2 13.4c0 3.1 1.7 4.7 4.7 4.7h1.6v-2.3c0-1.7 1.4-3.1 3.1-3.1h4.9c1.4 0 2.5-1.1 2.5-2.5V5.4C18.8 3.4 17 2 11.9 2zm-1.8 1.9c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1zm3.8 6.7v2.3c0 1.7-1.4 3.1-3.1 3.1H5.9c-1.4 0-2.5 1.1-2.5 2.5v4.8c0 2 1.8 3.4 6.9 3.4 3.1 0 4.9-1.4 4.9-3.4v-2.5h-5v-.8h6.4c2 0 3.6-1.6 3.6-4.7 0-3.1-1.7-4.7-4.7-4.7h-1.6zm-1.8 11.5c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z"/>
+      </svg>
+    )
+  },
+  {
+    name: "ESP32 & IoT",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="5" y="4" width="14" height="16" rx="2" />
+        <path d="M9 9h6m-6 3h6m-6 3h6M2 7h3m-3 5h3m-3 5h3m14-10h3m-3 5h3m-3 5h3" />
+      </svg>
+    )
+  },
+  {
+    name: "KiCad PCB",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="6" cy="6" r="2.5" />
+        <circle cx="18" cy="18" r="2.5" />
+        <circle cx="18" cy="6" r="2.5" />
+        <path d="M8.5 6h7M6 8.5v7l4 4h5.5" />
+      </svg>
+    )
+  },
+  {
+    name: "3D Printing",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M6 18H4a2 2 0 01-2-2V8a2 2 0 012-2h16a2 2 0 012 2v8a2 2 0 01-2 2h-2M6 6V3h12v3m-6 9v3m-4 0h8" />
+      </svg>
+    )
+  },
+  {
+    name: "Fusion 360",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+        <line x1="12" y1="22.08" x2="12" y2="12" />
+      </svg>
+    )
+  },
+  {
+    name: "Affinity Designer",
+    logo: <span className="w-5 h-5 rounded-md bg-white text-black font-bold font-mono text-[10px] flex items-center justify-center shrink-0 select-none">Af</span>
+  },
+  {
+    name: "Git & GitHub",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0 fill-current" viewBox="0 0 24 24">
+        <path d="M21.7 10.9l-8.6-8.6a2 2 0 00-2.8 0L8.7 3.9l3.5 3.5a2.4 2.4 0 013 3l3.4 3.4a2.4 2.4 0 11-1.4 1.4l-3.2-3.2v4.8a2.4 2.4 0 11-2 0V9.8a2.4 2.4 0 01-1.3-3.1L7.2 5.2 2.3 10.1a2 2 0 000 2.8l8.6 8.6a2 2 0 002.8 0l8-8a2 2 0 000-2.8z" />
+      </svg>
+    )
+  },
+  {
+    name: "Linux & Bash",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polyline points="4 17 10 11 4 5" />
+        <line x1="12" y1="19" x2="20" y2="19" />
+      </svg>
+    )
+  },
+  {
+    name: "Soldering & SMD Rework",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 3.5z" />
+      </svg>
+    )
+  },
+  {
+    name: "Hardware Prototyping",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="2" y="2" width="20" height="20" rx="3" />
+        <circle cx="7" cy="7" r="1.5" fill="currentColor" />
+        <circle cx="12" cy="7" r="1.5" fill="currentColor" />
+        <circle cx="17" cy="7" r="1.5" fill="currentColor" />
+        <circle cx="7" cy="12" r="1.5" fill="currentColor" />
+        <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+        <circle cx="17" cy="12" r="1.5" fill="currentColor" />
+        <circle cx="7" cy="17" r="1.5" fill="currentColor" />
+        <circle cx="12" cy="17" r="1.5" fill="currentColor" />
+        <circle cx="17" cy="17" r="1.5" fill="currentColor" />
+      </svg>
+    )
+  },
+  {
+    name: "MicroPython",
+    logo: <span className="w-5 h-5 rounded-md bg-white text-black font-bold font-mono text-[9px] flex items-center justify-center shrink-0 select-none">µPy</span>
+  },
+  {
+    name: "Arduino & PlatformIO",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M18.178 8c5.096 0 5.096 8 0 8-2.607 0-4.444-2.193-6.178-4 1.734-1.807 3.571-4 6.178-4zM5.822 8C.726 8 .726 16 5.822 16c2.607 0 4.444-2.193 6.178-4-1.734-1.807-3.571-4-6.178-4z" />
+        <path d="M4 12h3.5m9-1.5v3m-1.5-1.5h3" />
+      </svg>
+    )
+  },
+  {
+    name: "I2C / SPI / UART",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 12h3l2-6 4 12 3-8 2 4h4" />
+      </svg>
+    )
+  },
+  {
+    name: "Multimeter & Oscilloscope",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 12l3-4M8 16h.01M16 16h.01" />
+      </svg>
+    )
+  },
+  {
+    name: "Circuit Schematics & BOM",
+    logo: (
+      <svg className="w-5 h-5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M2 12h5l2-4 4 8 3-5 2 3h4" />
+        <circle cx="2" cy="12" r="1" fill="currentColor" />
+        <circle cx="20" cy="14" r="1" fill="currentColor" />
+      </svg>
+    )
+  }
+];
+
 export default function ProbalPortfolio() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: -1000, y: -1000 });
-  const [copied, setCopied] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'projects' | 'education'>('projects');
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
-
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText(SYSTEM_CONFIG.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    localStorage.setItem('theme', nextTheme);
-  };
+  const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
@@ -63,850 +209,974 @@ export default function ProbalPortfolio() {
     }
   }, []);
 
-  // Ultra-High Performance Viewport-Fixed Particle Canvas (Zero Reflows)
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+  };
 
-    let particles: Particle[] = [];
-    let animationFrameId: number;
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-
-    const setupCanvas = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR at 2x for retina battery/GPU efficiency
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      ctx.scale(dpr, dpr);
-    };
-
-    class Particle implements IParticle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      baseAlpha: number;
-      alpha: number;
-
-      constructor(w: number, h: number) {
-        this.x = Math.random() * w;
-        this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 0.7;
-        this.vy = (Math.random() - 0.5) * 0.7;
-        this.size = Math.random() * 2 + 1.2;
-        this.baseAlpha = Math.random() * 0.3 + 0.2;
-        this.alpha = this.baseAlpha;
-      }
-
-      update(w: number, h: number) {
-        this.x += this.vx;
-        this.y += this.vy;
-
-        // Friction damping
-        this.vx *= 0.98;
-        this.vy *= 0.98;
-
-        // Maintain float speed
-        if (Math.abs(this.vx) < 0.15) this.vx += (Math.random() - 0.5) * 0.15;
-        if (Math.abs(this.vy) < 0.15) this.vy += (Math.random() - 0.5) * 0.15;
-
-        // Viewport boundary bounce
-        if (this.x < 0 || this.x > w) this.vx *= -1;
-        if (this.y < 0 || this.y > h) this.vy *= -1;
-
-        // Mouse pointer repulsion
-        const dx = mouseRef.current.x - this.x;
-        const dy = mouseRef.current.y - this.y;
-        const distSq = dx * dx + dy * dy;
-        const maxDist = 120;
-        const maxDistSq = maxDist * maxDist;
-
-        if (distSq < maxDistSq && distSq > 0) {
-          const dist = Math.sqrt(distSq);
-          const force = (maxDist - dist) / maxDist;
-          const pushAngle = Math.atan2(dy, dx);
-          this.vx -= Math.cos(pushAngle) * force * 0.5;
-          this.vy -= Math.sin(pushAngle) * force * 0.5;
-          this.alpha = Math.min(0.85, this.baseAlpha + force * 0.35);
-        } else {
-          if (this.alpha > this.baseAlpha) this.alpha -= 0.02;
-        }
-      }
-    }
-
-    const initParticles = () => {
-      particles = [];
-      const isMobile = width < 768;
-      const count = isMobile 
-        ? Math.min(Math.floor((width * height) / 28000), 30) 
-        : Math.min(Math.floor((width * height) / 20000), 55);
-      
-      for (let i = 0; i < count; i++) {
-        particles.push(new Particle(width, height));
-      }
-    };
-
-    setupCanvas();
-    initParticles();
-
-    const maxDist = 135;
-    const maxDistSq = maxDist * maxDist;
-    const mmaxDist = 160;
-    const mmaxDistSq = mmaxDist * mmaxDist;
-
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      const particleCount = particles.length;
-      for (let i = 0; i < particleCount; i++) {
-        const p1 = particles[i];
-        p1.update(width, height);
-
-        // 1. Draw connecting lines between nearby particles
-        for (let j = i + 1; j < particleCount; j++) {
-          const p2 = particles[j];
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const distSq = dx * dx + dy * dy;
-
-          if (distSq < maxDistSq) {
-            const dist = Math.sqrt(distSq);
-            const lineAlpha = (1 - dist / maxDist) * 0.3;
-            ctx.strokeStyle = theme === 'dark' 
-              ? `rgba(59, 130, 246, ${lineAlpha})` 
-              : `rgba(37, 99, 235, ${lineAlpha})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-          }
-        }
-
-        // 2. Connect particle to mouse cursor with tracer line
-        const mdx = mouseRef.current.x - p1.x;
-        const mdy = mouseRef.current.y - p1.y;
-        const mdistSq = mdx * mdx + mdy * mdy;
-
-        if (mdistSq < mmaxDistSq) {
-          const mdist = Math.sqrt(mdistSq);
-          const mAlpha = (1 - mdist / mmaxDist) * 0.5;
-          ctx.strokeStyle = theme === 'dark' 
-            ? `rgba(96, 165, 250, ${mAlpha})` 
-            : `rgba(29, 78, 216, ${mAlpha})`;
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(mouseRef.current.x, mouseRef.current.y);
-          ctx.stroke();
-        }
-
-        // 3. Draw particle dot
-        ctx.fillStyle = theme === 'dark' 
-          ? `rgba(96, 165, 250, ${p1.alpha})` 
-          : `rgba(37, 99, 235, ${p1.alpha})`;
-        ctx.beginPath();
-        ctx.arc(p1.x, p1.y, p1.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    const handleResize = () => {
-      setupCanvas();
-      initParticles();
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { 
-        x: e.clientX, 
-        y: e.clientY 
-      };
-    };
-
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [theme]);
+  const copyEmail = () => {
+    navigator.clipboard.writeText(SYSTEM_CONFIG.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const isDark = theme === 'dark';
 
+  // --- ANTI-GRAVITY MODE STATE & PHYSICS ---
+  const [isAntiGravity, setIsAntiGravity] = useState(false);
+  const gravityRafRef = useRef<number>(0);
+  const gravityMouseRef = useRef({ x: -9999, y: -9999 });
+  const gravityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  interface GravityBody {
+    el: HTMLElement;
+    homeX: number;
+    homeY: number;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    rotation: number;
+    angularVel: number;
+    width: number;
+    height: number;
+  }
+
+  const gravityBodiesRef = useRef<GravityBody[]>([]);
+
+  const activateAntiGravity = useCallback(() => {
+    if (isAntiGravity) return;
+    setIsAntiGravity(true);
+
+    // Capture all [data-gravity] elements and their current positions
+    const elements = Array.from(document.querySelectorAll<HTMLElement>('[data-gravity]'));
+    const bodies: GravityBody[] = elements.map((el) => {
+      const rect = el.getBoundingClientRect();
+      el.style.willChange = 'transform';
+      el.style.transition = 'none';
+      el.style.zIndex = '20';
+      return {
+        el,
+        homeX: 0,
+        homeY: 0,
+        x: 0,
+        y: 0,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: -(Math.random() * 1.5 + 1.0), // upward initial velocity
+        rotation: 0,
+        angularVel: (Math.random() - 0.5) * 1.2,
+        width: rect.width,
+        height: rect.height,
+      };
+    });
+    gravityBodiesRef.current = bodies;
+
+    // Mouse tracking for repulsion
+    const handleMouse = (e: MouseEvent) => {
+      gravityMouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouse);
+
+    // Physics loop
+    const step = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const mouse = gravityMouseRef.current;
+
+      for (const body of gravityBodiesRef.current) {
+        // Anti-gravity: gentle upward drift
+        body.vy -= 0.04;
+        // Slight random horizontal perturbation
+        body.vx += (Math.random() - 0.5) * 0.08;
+
+        // Mouse repulsion force field (radius ~180px)
+        const rect = body.el.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = cx - mouse.x;
+        const dy = cy - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 180 && dist > 1) {
+          const force = (180 - dist) / 180 * 0.8;
+          body.vx += (dx / dist) * force;
+          body.vy += (dy / dist) * force;
+        }
+
+        // Damping
+        body.vx *= 0.985;
+        body.vy *= 0.985;
+        body.angularVel *= 0.99;
+
+        // Speed clamp
+        const speed = Math.sqrt(body.vx * body.vx + body.vy * body.vy);
+        if (speed > 5) {
+          body.vx = (body.vx / speed) * 5;
+          body.vy = (body.vy / speed) * 5;
+        }
+
+        // Update position
+        body.x += body.vx;
+        body.y += body.vy;
+        body.rotation += body.angularVel;
+
+        // Viewport boundary bounce (using transform offsets)
+        const elRect = body.el.getBoundingClientRect();
+        if (elRect.left + body.vx < 0) { body.vx = Math.abs(body.vx) * 0.6; body.x += 2; }
+        if (elRect.right + body.vx > vw) { body.vx = -Math.abs(body.vx) * 0.6; body.x -= 2; }
+        if (elRect.top + body.vy < 0) { body.vy = Math.abs(body.vy) * 0.6; body.y += 2; }
+        if (elRect.bottom + body.vy > vh) { body.vy = -Math.abs(body.vy) * 0.6; body.y -= 2; }
+
+        // Apply transform
+        body.el.style.transform = `translate3d(${body.x}px, ${body.y}px, 0) rotate(${body.rotation}deg)`;
+      }
+
+      gravityRafRef.current = requestAnimationFrame(step);
+    };
+
+    gravityRafRef.current = requestAnimationFrame(step);
+
+    // Auto snap-back after 8 seconds
+    gravityTimerRef.current = setTimeout(() => {
+      cancelAnimationFrame(gravityRafRef.current);
+      window.removeEventListener('mousemove', handleMouse);
+
+      // Animate snap-back
+      for (const body of gravityBodiesRef.current) {
+        body.el.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        body.el.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+      }
+
+      // Cleanup after animation
+      setTimeout(() => {
+        for (const body of gravityBodiesRef.current) {
+          body.el.style.willChange = '';
+          body.el.style.transition = '';
+          body.el.style.transform = '';
+          body.el.style.zIndex = '';
+        }
+        gravityBodiesRef.current = [];
+        setIsAntiGravity(false);
+      }, 900);
+    }, 8000);
+  }, [isAntiGravity]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(gravityRafRef.current);
+      if (gravityTimerRef.current) clearTimeout(gravityTimerRef.current);
+    };
+  }, []);
+
   return (
-    <main 
-      className={`min-h-screen font-sans selection:bg-blue-500/20 overflow-x-hidden relative transition-colors duration-500 ${
-        isDark ? 'bg-[#09090b] text-zinc-300' : 'bg-[#f4f4f5] text-zinc-800'
-      }`}
-    >
-      <canvas 
-        ref={canvasRef} 
-        className={`fixed inset-0 z-0 pointer-events-none transition-opacity duration-500 ${
-          isDark ? 'opacity-[0.75]' : 'opacity-[0.65]'
-        }`} 
-      />
+    <div className={`min-h-screen transition-colors duration-300 font-sans ${
+      isDark ? 'bg-[#030712] text-zinc-300' : 'bg-[#fafafa] text-zinc-800'
+    }`}>
+      {/* --- CLEAN TOP NAVIGATION (EXACT TED STYLE) --- */}
+      <header className={`sticky top-0 z-50 backdrop-blur-sm transition-colors ${
+        isDark ? 'bg-[#030712]/80 border-b border-zinc-800/60' : 'bg-white/80 border-b border-zinc-200/60'
+      }`}>
+        <div className="mx-auto max-w-3xl px-4 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between gap-2">
+          <nav className="flex items-center gap-3.5 sm:gap-8 text-xs sm:text-sm lowercase overflow-x-auto no-scrollbar">
+            <a href="#about" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>home</a>
+            <a href="#showcase" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>projects</a>
+            <a href="#skills" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>tech stack</a>
+            <Link href="/contact" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>contact</Link>
+          </nav>
 
-      <motion.div 
-        className={`fixed top-0 left-0 right-0 h-[2px] z-50 origin-left ${isDark ? 'bg-white' : 'bg-blue-600'}`} 
-        style={{ scaleX }} 
-      />
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <Link
+              href="/tools"
+              aria-label="Interactive EE Workbench Tools"
+              title="EE Workbench Tools"
+              className={`inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md transition-colors ${
+                isDark ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/60' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100'
+              }`}
+            >
+              <Wrench size={18} />
+            </Link>
 
-      {/* TOP HEADER / CONTROLS WITH LABELS (MOBILE RESPONSIVE - MONOCHROME GRAYSCALE) */}
-      <header className="fixed top-3 right-3 sm:top-6 sm:right-6 z-40 flex items-center gap-1.5 sm:gap-3">
-        {/* MINI GAME LAUNCHER BUTTON */}
-        <Link
-          href="/arcade"
-          aria-label="Open Hardware Arcade Games Page"
-          className={`px-2.5 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl sm:rounded-2xl border backdrop-blur-md transition-all hover:scale-105 shadow-sm flex items-center gap-1.5 sm:gap-2 ${
-            isDark 
-              ? 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white' 
-              : 'bg-white/90 border-zinc-200 text-zinc-800 hover:bg-zinc-100 shadow-sm'
-          }`}
-          title="Play Hardware Mini-Games"
-        >
-          <Gamepad2 size={15} />
-          <span className="text-[11px] sm:text-xs font-bold font-sans">Arcade</span>
-        </Link>
+            <Link
+              href="/arcade"
+              aria-label="Micro-Arcade Games"
+              title="Micro-Arcade Games"
+              className={`inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md transition-colors ${
+                isDark ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/60' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100'
+              }`}
+            >
+              <Gamepad2 size={18} />
+            </Link>
 
-        {/* WORKBENCH UTILITIES LAUNCHER BUTTON */}
-        <Link
-          href="/tools"
-          aria-label="Open Practical Engineering Tools"
-          className={`px-2.5 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl sm:rounded-2xl border backdrop-blur-md transition-all hover:scale-105 shadow-sm flex items-center gap-1.5 sm:gap-2 ${
-            isDark 
-              ? 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white' 
-              : 'bg-white/90 border-zinc-200 text-zinc-800 hover:bg-zinc-100 shadow-sm'
-          }`}
-          title="Practical EE Workbench Tools"
-        >
-          <Wrench size={15} />
-          <span className="text-[11px] sm:text-xs font-bold font-sans">Tools</span>
-        </Link>
+            <button
+              onClick={() => setIsTerminalOpen(true)}
+              aria-label="Toggle Console Terminal"
+              title="Toggle Console Terminal"
+              className={`inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md transition-colors ${
+                isDark ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/60' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100'
+              }`}
+            >
+              <Terminal size={18} />
+            </button>
 
-        {/* THEME TOGGLE BUTTON */}
-        <button
-          onClick={toggleTheme}
-          aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-          className={`px-2.5 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl sm:rounded-2xl border backdrop-blur-md transition-all hover:scale-105 shadow-sm flex items-center gap-1.5 sm:gap-2 ${
-            isDark 
-              ? 'bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white' 
-              : 'bg-white/90 border-zinc-200 text-zinc-800 hover:bg-zinc-100 shadow-sm'
-          }`}
-        >
-          {isDark ? <Sun size={15} /> : <Moon size={15} />}
-          <span className="text-[11px] sm:text-xs font-bold font-sans">{isDark ? 'Light' : 'Dark'}</span>
-        </button>
+            <button
+              onClick={toggleTheme}
+              aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+              title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+              className={`inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md transition-colors ${
+                isDark ? 'text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/60' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100'
+              }`}
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+          </div>
+        </div>
       </header>
 
-      <div className="relative z-10 px-5 sm:px-8 md:px-12 max-w-6xl mx-auto">
+      {/* --- MAIN EDITORIAL CONTAINER (CONSTRAINED TO MAX-W-3XL) --- */}
+      <main className="mx-auto max-w-3xl px-4 sm:px-8 py-6 sm:py-8 space-y-12 sm:space-y-16">
         
-        {/* --- HERO SECTION --- */}
-        <section className={`min-h-screen py-24 md:py-0 flex flex-col justify-center border-b ${isDark ? 'border-white/5' : 'border-slate-300'}`}>
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
-            
-            <motion.div 
-              className="md:col-span-8" 
-              initial={{ opacity: 0, y: 10 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 1 }}
+        {/* --- HERO SECTION (STACKED PHOTO DECK & WARM INTRO) --- */}
+        <section id="about" className="flex flex-col items-start gap-8 md:flex-row-reverse md:items-center md:justify-between pt-2">
+          
+          {/* PHOTO STACK DECK (MATCHING SCREENSHOT) */}
+          <div className="relative grid h-[210px] w-[155px] sm:h-[235px] sm:w-[175px] place-items-center shrink-0 self-center md:self-auto md:mr-8 select-none">
+            {/* Layer 3 - back tilted card */}
+            <div 
+              className="absolute h-[210px] w-[155px] sm:h-[235px] sm:w-[175px] rounded-2xl overflow-hidden border border-zinc-700/40 shadow-md pointer-events-none transition-transform duration-300"
+              style={{ transform: 'rotate(6deg)', backgroundColor: isDark ? '#1e293b' : '#e2e8f0' }}
+            />
+            {/* Layer 2 - middle tilted card */}
+            <div 
+              className="absolute h-[210px] w-[155px] sm:h-[235px] sm:w-[175px] rounded-2xl overflow-hidden border border-zinc-700/60 shadow-lg pointer-events-none transition-transform duration-300"
+              style={{ transform: 'rotate(-6deg)', backgroundColor: isDark ? '#0f172a' : '#cbd5e1' }}
+            />
+            {/* Layer 1 - front photo card */}
+            <div 
+              className={`absolute h-[210px] w-[155px] sm:h-[235px] sm:w-[175px] rounded-2xl overflow-hidden border-2 shadow-2xl transition-all duration-300 hover:rotate-0 hover:scale-105 cursor-grab active:cursor-grabbing ${
+                isDark ? 'border-zinc-700 bg-zinc-900 shadow-black/80' : 'border-zinc-300 bg-white shadow-zinc-400/50'
+              }`}
             >
-              {/* MOBILE PROFILE AVATAR HEADER */}
-              <div className="flex md:hidden items-center gap-3.5 mb-6">
-                <div className={`w-20 h-20 rounded-2xl relative overflow-hidden shrink-0 border-2 shadow-xl ${
-                  isDark ? 'border-blue-500/40 bg-zinc-900 shadow-blue-500/10' : 'border-blue-600/40 bg-white shadow-slate-300'
-                }`}>
-                  <Image 
-                    src={SYSTEM_CONFIG.profileImage} 
-                    alt={SYSTEM_CONFIG.name}
-                    fill
-                    priority
-                    sizes="80px"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_#3b82f6]" />
-                </div>
+              <Image 
+                src={SYSTEM_CONFIG.profileImage} 
+                alt={SYSTEM_CONFIG.name}
+                fill
+                priority
+                sizes="175px"
+                className="w-full h-full object-cover object-top select-none"
+              />
+            </div>
+          </div>
 
-                <div className="space-y-1">
-                  <div className={`text-[11px] font-mono uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 ${
-                    isDark ? 'text-blue-400' : 'text-blue-700'
-                  }`}>
-                    <MapPin size={13} className="shrink-0" />
-                    <span>{SYSTEM_CONFIG.location}</span>
-                  </div>
-                  <span className={`text-[11px] font-mono block ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
-                    EE Student @ BCREC
-                  </span>
-                </div>
+          {/* LEFT: TEXT CONTENT */}
+          <div className="flex flex-col max-w-md sm:max-w-xl">
+            <h1 className={`text-3xl sm:text-5xl font-bold tracking-tight ${
+              isDark ? 'text-white' : 'text-zinc-950'
+            }`}>
+              hi probal here. <span className="inline-block">👋</span>
+            </h1>
+
+            <p className="mt-2 text-sm sm:text-base font-medium text-zinc-300">
+              3rd-year electrical engineering student from West Bengal, India 🇮🇳
+            </p>
+
+            <p className="mt-4 text-sm sm:text-base text-zinc-400 leading-relaxed max-w-sm">
+              Hardware by profession, full-stack by passion. I build connected physical devices from schematic to prototype.
+            </p>
+
+            <div className="mt-6 space-y-1">
+              <div className="flex items-center gap-1.5 text-sm font-semibold text-zinc-200">
+                <span>For Q&amp;A, start a chat with</span>
+                <button 
+                  onClick={() => setIsTerminalOpen(true)}
+                  className="underline hover:text-white font-bold transition-colors cursor-pointer"
+                >
+                  Probal Console
+                </button>
+                <span className="text-white font-bold">↘</span>
               </div>
-
-              <h1 className={`text-6xl sm:text-8xl md:text-[10rem] font-bold tracking-tighter leading-none mb-3 ${isDark ? 'text-white/95' : 'text-slate-950'}`}>
-                {SYSTEM_CONFIG.name}
-              </h1>
-
-              {/* DESKTOP LOCATION BADGE */}
-              <div className={`hidden md:flex text-xs md:text-sm font-mono uppercase tracking-[0.2em] font-bold mb-6 md:mb-8 items-center gap-2 ${
-                isDark ? 'text-blue-400' : 'text-blue-700'
-              }`}>
-                <MapPin size={14} className="shrink-0" />
-                <span>{SYSTEM_CONFIG.location}</span>
-              </div>
-
-              <p className={`text-base sm:text-xl md:text-2xl max-w-xl leading-relaxed ${isDark ? 'text-gray-400' : 'text-slate-900'}`}>
-                {SYSTEM_CONFIG.tagline}
+              <p className="text-xs text-zinc-500">
+                For project inquiries or hardware collaboration, reach out via email.
               </p>
-              
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-8 sm:mt-12">
-                <div className={`flex items-center gap-6 ${isDark ? 'text-white/40' : 'text-slate-700'}`}>
-                  <a 
-                    href={SYSTEM_CONFIG.github} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    aria-label="GitHub Profile" 
-                    className={`transition-all hover:scale-110 ${isDark ? 'hover:text-white' : 'hover:text-slate-950'}`}
-                  >
-                    <Github size={22} />
-                  </a>
-                  <a 
-                    href={SYSTEM_CONFIG.linkedin} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    aria-label="LinkedIn Profile" 
-                    className={`transition-all hover:scale-110 ${isDark ? 'hover:text-white' : 'hover:text-slate-950'}`}
-                  >
-                    <Linkedin size={22} />
-                  </a>
-                </div>
+            </div>
 
-                {/* CV DOWNLOAD BUTTON */}
+            {/* ACTION ROW: RESUME + SOCIALS */}
+            <div className="mt-6 space-y-2.5">
+              <div className="flex flex-wrap items-center gap-4">
                 <a
                   href={SYSTEM_CONFIG.resumeUrl}
                   download="Probal_Khanra_CV.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Download CV PDF"
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border font-mono text-xs uppercase tracking-widest transition-all hover:scale-105 shadow-md ${
-                    isDark
-                      ? 'bg-blue-600 border-blue-500 text-white hover:bg-blue-500 shadow-blue-600/20'
-                      : 'bg-blue-600 border-blue-600 text-white hover:bg-blue-700 shadow-sm'
+                  className={`inline-flex items-center justify-center gap-2 rounded-md text-sm font-semibold transition-colors h-9 px-4 py-2 border shadow-sm ${
+                    isDark 
+                      ? 'border-zinc-800 bg-zinc-900/90 text-white hover:bg-zinc-800' 
+                      : 'border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
                   }`}
                 >
-                  <FileText size={14} />
-                  <span>Download_CV</span>
+                  <span>Resume</span>
+                  <FileDown size={16} />
                 </a>
-              </div>
-            </motion.div>
 
-            {/* --- DESKTOP TALL IMAGE MODULE --- */}
-            <motion.div 
-              className="md:col-span-4 hidden md:flex justify-end mt-4 md:mt-0" 
-              initial={{ opacity: 0, scale: 0.9 }} 
-              whileInView={{ opacity: 1, scale: 1 }} 
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <div className={`w-full max-w-[320px] aspect-[3/4] rounded-3xl relative overflow-hidden group shadow-2xl ${
-                isDark 
-                  ? 'bg-[#0a0a0a] border border-white/10 shadow-blue-500/5' 
-                  : 'bg-[#cbd5e1] border border-slate-500 shadow-slate-600/30'
-              }`}>
-                <Image 
-                  src={SYSTEM_CONFIG.profileImage} 
-                  alt={SYSTEM_CONFIG.name}
-                  fill
-                  priority
-                  sizes="320px"
-                  className="w-full h-full object-cover grayscale-0 opacity-100 transition-all duration-700 ease-in-out group-hover:scale-105"
-                />
-                <div className={`absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-40 z-10 ${
-                  isDark ? 'from-[#020202]' : 'from-[#94a3b8]'
-                }`} />
-                <div className={`absolute inset-0 border-[1px] rounded-3xl pointer-events-none z-10 ${
-                  isDark ? 'border-white/5' : 'border-slate-400/40'
-                }`} />
-                <div className="absolute top-4 right-4 z-10">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_#3b82f6]" />
+                <div className="flex items-center gap-5 text-zinc-400">
+                  <a
+                    href={SYSTEM_CONFIG.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors"
+                    title="LinkedIn"
+                  >
+                    <Linkedin size={20} />
+                  </a>
+                  <a
+                    href={SYSTEM_CONFIG.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors"
+                    title="GitHub"
+                  >
+                    <Github size={20} />
+                  </a>
+                  <a
+                    href={`mailto:${SYSTEM_CONFIG.email}`}
+                    className="hover:text-white transition-colors"
+                    title="Email"
+                  >
+                    <Mail size={20} />
+                  </a>
                 </div>
               </div>
-            </motion.div>
+
+              {/* OPEN TO INTERNSHIP STATUS */}
+              <div className="flex items-center gap-2 text-xs pt-0.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className={`font-medium ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                  open to internship &amp; engineering opportunities
+                </span>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* --- WORK & SKILLS SECTION --- */}
-        <section className="py-16 md:py-32">
-          {/* Currently Working/Learning */}
-          <motion.div 
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-            className={`flex items-center gap-3 mb-10 md:mb-16 p-3.5 sm:p-4 border rounded-2xl inline-flex max-w-full ${
-              isDark 
-                ? 'bg-white/[0.03] border-white/10' 
-                : 'bg-[#cbd5e1] border-slate-500 shadow-sm'
-            }`}
-          >
-            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full shrink-0 animate-pulse shadow-[0_0_8px_#3b82f6]" />
-            <span className={`text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] font-bold truncate ${isDark ? 'text-white/60' : 'text-slate-800'}`}>
-              Current Focus: <span className={`font-mono uppercase ${isDark ? 'text-white' : 'text-slate-950 font-bold'}`}>{SYSTEM_CONFIG.currentFocus}</span>
-            </span>
-          </motion.div>
+        {/* --- SEGMENTED TABS: WORK & EDUCATION (MATCHING SCREENSHOT) --- */}
+        <section id="showcase" className="space-y-4">
+          <div className={`h-10 items-center justify-center rounded-lg p-1 grid w-full grid-cols-2 border shadow-sm ${
+            isDark ? 'bg-zinc-900/50 border-zinc-800/80 text-zinc-400' : 'bg-zinc-100 border-zinc-200 text-zinc-600'
+          }`}>
+            <button
+              type="button"
+              onClick={() => setActiveTab('projects')}
+              className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all ${
+                activeTab === 'projects'
+                  ? isDark ? 'bg-zinc-900 text-white shadow font-semibold' : 'bg-white text-zinc-950 shadow font-semibold'
+                  : 'hover:text-white'
+              }`}
+            >
+              Work
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('education')}
+              className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all ${
+                activeTab === 'education'
+                  ? isDark ? 'bg-zinc-900 text-white shadow font-semibold' : 'bg-white text-zinc-950 shadow font-semibold'
+                  : 'hover:text-white'
+              }`}
+            >
+              Education
+            </button>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-20">
-            {/* Projects (Left) */}
-            <div className="md:col-span-7 space-y-8">
-              <h2 className={`text-xs font-mono uppercase tracking-widest font-bold mb-6 ${
-                isDark ? 'text-blue-400' : 'text-blue-600'
-              }`}>Featured Projects</h2>
+          {/* ENCLOSED TIMELINE CARD CONTAINER (MATCHING SCREENSHOT) */}
+          <div className={`rounded-xl border shadow overflow-hidden ${
+            isDark ? 'bg-zinc-950/60 border-zinc-800/90 text-zinc-200' : 'bg-white border-zinc-200 text-zinc-800'
+          }`}>
+            <div className="p-4 sm:p-8">
+              
+              {/* TAB 1: WORK / PROJECTS VIEW */}
+              {activeTab === 'projects' && (
+                <ul className="ml-8 sm:ml-10 border-l border-zinc-800 space-y-8 sm:space-y-10">
+                  {PROJECTS.map((proj) => (
+                    <li key={proj.id} className="relative ml-8 sm:ml-10 py-1">
+                      <div className={`absolute -left-[45px] sm:-left-16 top-0.5 flex items-center justify-center rounded-full border shadow-md w-10 h-10 sm:w-12 sm:h-12 overflow-hidden ${
+                        isDark ? 'bg-zinc-900 border-zinc-700 text-white' : 'bg-white border-zinc-300 text-zinc-900'
+                      }`}>
+                        <Cpu size={20} />
+                      </div>
 
-              <div className="space-y-6">
-                {PROJECTS.map((p) => (
-                  <div 
-                    key={p.id} 
-                    className={`group relative overflow-hidden rounded-3xl border p-6 transition-all duration-300 ${
-                      isDark 
-                        ? 'border-zinc-800 bg-zinc-900/90 hover:border-blue-500/40' 
-                        : 'border-zinc-200 bg-white shadow-sm hover:border-blue-500'
-                    }`}
-                  >
-                    <div className="relative z-10 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <button
-                          onClick={() => setSelectedProject(p)}
-                          className="text-left group/title"
-                        >
-                          <h3 className={`text-2xl md:text-3xl font-bold transition-colors tracking-tight italic ${
-                            isDark 
-                              ? 'text-white group-hover/title:text-blue-400' 
-                              : 'text-zinc-900 group-hover/title:text-blue-600'
-                          }`}>
-                            {p.title}
-                          </h3>
-                        </button>
-                        
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setSelectedProject(p)}
-                            className={`px-3 py-1.5 rounded-xl border text-xs font-mono uppercase font-bold transition-all ${
-                              isDark
-                                ? 'bg-zinc-800 border-zinc-700 text-blue-400 hover:bg-zinc-700'
-                                : 'bg-zinc-100 border-zinc-200 text-blue-600 hover:bg-zinc-200 shadow-sm'
+                      <div className="flex flex-1 flex-col justify-start gap-1.5">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                          <h2 className={`text-base font-semibold leading-none ${isDark ? 'text-white' : 'text-zinc-950'}`}>
+                            {proj.title}
+                          </h2>
+                          <span className="text-xs font-mono text-emerald-400 font-semibold">{proj.status}</span>
+                        </div>
+
+                        <p className="text-xs font-mono text-zinc-400">{proj.tech}</p>
+
+                        {/* PROJECT BULLET POINTS (RATHER THAN PLAIN TEXT BLOCK) */}
+                        <ul className="mt-2 list-outside list-disc pl-4 space-y-1.5 text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                          {proj.highlights && proj.highlights.length > 0 ? (
+                            proj.highlights.map((point, idx) => (
+                              <li key={idx} className="marker:text-zinc-500">
+                                {point}
+                              </li>
+                            ))
+                          ) : (
+                            proj.description
+                              .split('. ')
+                              .filter(Boolean)
+                              .map((sentence, idx) => (
+                                <li key={idx} className="marker:text-zinc-500">
+                                  {sentence.endsWith('.') ? sentence : `${sentence}.`}
+                                </li>
+                              ))
+                          )}
+                        </ul>
+
+                        {/* PROJECT CHIPS & ACTION BUTTONS */}
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          {proj.liveUrl && (
+                            <a
+                              href={proj.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-white hover:bg-zinc-200 text-zinc-950 shadow transition-colors"
+                            >
+                              <Globe size={12} />
+                              <span>Live Demo</span>
+                            </a>
+                          )}
+                          <a
+                            href={proj.repo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border transition-colors ${
+                              isDark ? 'border-zinc-700 bg-zinc-800 text-zinc-200 hover:bg-zinc-700' : 'border-zinc-300 bg-zinc-100 text-zinc-800 hover:bg-zinc-200'
                             }`}
-                            title="View Technical Specs & Schematics"
                           >
-                            <span>Specs</span>
-                          </button>
-
-                          <a 
-                            href={p.repo} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            aria-label={`View ${p.title} repository`} 
-                            className={`p-2 rounded-xl border transition-colors ${
-                              isDark ? 'border-zinc-800 text-zinc-400 hover:text-white' : 'border-zinc-200 text-zinc-600 hover:text-zinc-900'
-                            }`}
-                          >
-                            <ExternalLink size={16} />
+                            <Github size={12} />
+                            <span>Source</span>
                           </a>
+                          <button
+                            onClick={() => setSelectedProject(proj)}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                              isDark ? 'border-zinc-700 bg-zinc-800 text-zinc-200 hover:bg-zinc-700' : 'border-zinc-300 bg-zinc-100 text-zinc-800 hover:bg-zinc-200'
+                            }`}
+                          >
+                            <Wrench size={12} />
+                            <span>Specs &amp; BOM</span>
+                          </button>
                         </div>
                       </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-                      <span className={`text-[10px] uppercase font-mono tracking-widest block ${
-                        isDark ? 'text-zinc-400' : 'text-zinc-600 font-semibold'
-                      }`}>{p.tech}</span>
-                      
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {p.manifest.map(item => (
-                          <span 
-                            key={item} 
-                            className={`text-[9px] font-mono border px-2 py-0.5 rounded-lg uppercase font-bold ${
-                              isDark ? 'border-zinc-800 text-zinc-300 bg-zinc-950' : 'border-zinc-200 text-zinc-700 bg-zinc-100'
-                            }`}
-                          >
-                            {item}
-                          </span>
-                        ))}
+              {/* TAB 2: EDUCATION VIEW (WITH USER LOGO SLOTS & MONOGRAM FALLBACK) */}
+              {activeTab === 'education' && (
+                <ul className="ml-8 sm:ml-10 border-l border-zinc-800 space-y-8 sm:space-y-10">
+                  
+                  {/* ITEM 1: BCREC */}
+                  <li className="relative ml-8 sm:ml-10 py-1">
+                    <div className="absolute -left-[45px] sm:-left-16 top-0.5 flex items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 shadow-md w-10 h-10 sm:w-12 sm:h-12 overflow-hidden bg-white p-1">
+                      <img 
+                        src="/institutes/bcrec.png" 
+                        alt="BCREC Logo" 
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                      <span className="font-bold text-xs font-mono text-zinc-900 hidden">BCR</span>
+                    </div>
+
+                    <div className="flex flex-1 flex-col justify-start gap-1.5">
+                      <h2 className={`text-base font-semibold leading-none ${isDark ? 'text-white' : 'text-zinc-950'}`}>
+                        Dr. B. C. Roy Engineering College (BCREC)
+                      </h2>
+
+                      <div className="flex flex-col gap-1 mt-0.5">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                          <p className="text-sm font-medium text-zinc-400">B.Tech — Electrical Engineering</p>
+                          <time className="whitespace-nowrap text-xs tabular-nums text-zinc-500 font-mono">2024 — 2028 · Ongoing</time>
+                        </div>
+
+                        <ul className="ml-4 mt-2 list-outside list-disc space-y-1.5 text-sm text-zinc-400">
+                          <li>Focusing on embedded systems, microcontroller architecture, circuit analysis, and power electronics.</li>
+                          <li>Hands-on practical development of custom multi-sensor PCB telemetry hardware and IoT nodes.</li>
+                        </ul>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  </li>
 
-            {/* Skills & Workbench (Right - Sticky on desktop) */}
-            <div className="md:col-span-5 space-y-8 md:sticky md:top-28 self-start">
-              {/* Skills & Tools */}
-              <div>
-                <h2 className={`text-xs font-mono uppercase tracking-widest font-bold mb-6 ${
-                  isDark ? 'text-blue-400' : 'text-blue-700'
-                }`}>Skills & Tools</h2>
+                  {/* ITEM 2: HIGHER SECONDARY VOCATIONAL */}
+                  <li className="relative ml-8 sm:ml-10 py-1">
+                    <div className="absolute -left-[45px] sm:-left-16 top-0.5 flex items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 shadow-md w-10 h-10 sm:w-12 sm:h-12 overflow-hidden bg-white p-1">
+                      <img 
+                        src="/institutes/vocational.png" 
+                        alt="WBSCTVESD Vocational Logo" 
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                      <span className="font-bold text-xs font-mono text-zinc-900 hidden">ACR</span>
+                    </div>
 
-                <div className="space-y-3">
-                  {CORE_SKILLS.map((skill) => (
-                    <div 
-                      key={skill.name} 
-                      className={`p-3.5 border rounded-xl transition-all group ${
-                        isDark 
-                          ? 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05]' 
-                          : 'bg-[#cbd5e1] border-slate-500 hover:bg-[#e2e8f0] shadow-sm'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[11px] uppercase font-bold tracking-[0.15em] transition-colors ${
-                          isDark ? 'text-gray-300 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-950'
-                        }`}>
-                          {skill.name}
-                        </span>
-                        <span className={`text-[9px] font-mono uppercase tracking-widest ${
-                          isDark ? 'text-blue-400/70' : 'text-blue-700/80 font-bold'
-                        }`}>
-                          {skill.category}
-                        </span>
+                    <div className="flex flex-1 flex-col justify-start gap-1.5">
+                      <h2 className={`text-base font-semibold leading-none ${isDark ? 'text-white' : 'text-zinc-950'}`}>
+                        Anandanagar A. C. Roy High School, Singur
+                      </h2>
+
+                      <div className="flex flex-col gap-1 mt-0.5">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                          <p className="text-sm font-medium text-zinc-400">Higher Secondary (10+2) — Vocational Stream (Automobile)</p>
+                          <time className="whitespace-nowrap text-xs tabular-nums text-zinc-500 font-mono">2022 — 2024 · Completed</time>
+                        </div>
+
+                        <ul className="ml-4 mt-2 list-outside list-disc space-y-1.5 text-sm text-zinc-400">
+                          <li>Practical training in automobile electrical and mechanical subsystems, engines, and workshop technology.</li>
+                          <li>Foundational CAD drafting, circuit diagnostics, and technical fabrication.</li>
+                        </ul>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </li>
 
-              {/* Hardware Workbench */}
-              <div>
-                <h2 className={`text-xs font-mono uppercase tracking-widest font-bold mb-6 pt-2 ${
-                  isDark ? 'text-blue-400' : 'text-blue-700'
-                }`}>Hardware Workbench</h2>
-
-                <div className="grid grid-cols-2 gap-2.5">
-                  {WORKBENCH_TOOLS.map((tool) => (
-                    <div 
-                      key={tool.name} 
-                      className={`p-3 border rounded-xl transition-all group ${
-                        isDark 
-                          ? 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05]' 
-                          : 'bg-[#cbd5e1] border-slate-500 hover:bg-[#e2e8f0] shadow-sm'
-                      }`}
-                      title={tool.desc}
-                    >
-                      <span className={`text-[10px] uppercase font-bold tracking-[0.1em] transition-colors block truncate ${
-                        isDark ? 'text-gray-400 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-950'
-                      }`}>
-                        {tool.name}
-                      </span>
+                  {/* ITEM 3: SECONDARY */}
+                  <li className="relative ml-8 sm:ml-10 py-1">
+                    <div className="absolute -left-[45px] sm:-left-16 top-0.5 flex items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 shadow-md w-10 h-10 sm:w-12 sm:h-12 overflow-hidden bg-white p-1">
+                      <img 
+                        src="/institutes/secondary.png" 
+                        alt="WBBSE Secondary Education Logo" 
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                      <span className="font-bold text-xs font-mono text-zinc-900 hidden">ACR</span>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Cloud, Backend & Creative Stack */}
-              <div>
-                <h2 className={`text-xs font-mono uppercase tracking-widest font-bold mb-6 pt-2 ${
-                  isDark ? 'text-blue-400' : 'text-blue-700'
-                }`}>Cloud, Backend & Creative</h2>
+                    <div className="flex flex-1 flex-col justify-start gap-1.5">
+                      <h2 className={`text-base font-semibold leading-none ${isDark ? 'text-white' : 'text-zinc-950'}`}>
+                        Anandanagar A. C. Roy High School, Singur
+                      </h2>
 
-                <div className="space-y-2.5">
-                  {SOFTWARE_STACK.map((item) => (
-                    <div 
-                      key={item.name}
-                      className={`p-3 border rounded-xl transition-all group ${
-                        isDark 
-                          ? 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05]' 
-                          : 'bg-[#cbd5e1] border-slate-500 hover:bg-[#e2e8f0] shadow-sm'
-                      }`}
-                      title={item.desc}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[10px] uppercase font-bold tracking-[0.1em] transition-colors ${
-                          isDark ? 'text-gray-300 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-950'
-                        }`}>
-                          {item.name}
-                        </span>
-                        <span className={`text-[8px] font-mono uppercase px-2 py-0.5 rounded border ${
-                          isDark ? 'border-zinc-800 text-blue-400 bg-zinc-950' : 'border-slate-300 text-blue-700 bg-white font-semibold'
-                        }`}>
-                          {item.category}
-                        </span>
+                      <div className="flex flex-col gap-1 mt-0.5">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                          <p className="text-sm font-medium text-zinc-400">Secondary Education (10th Standard)</p>
+                          <time className="whitespace-nowrap text-xs tabular-nums text-zinc-500 font-mono">2020 — 2022 · Completed</time>
+                        </div>
+
+                        <ul className="ml-4 mt-2 list-outside list-disc space-y-1.5 text-sm text-zinc-400">
+                          <li>Core physical sciences, mathematics, and analytical fundamentals with high academic distinction.</li>
+                        </ul>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </li>
+
+                </ul>
+              )}
             </div>
           </div>
         </section>
 
-        {/* --- EDUCATION --- */}
-        <section className={`py-32 border-t ${isDark ? 'border-white/5' : 'border-slate-400/60'}`}>
-          <h2 className={`text-xs font-mono uppercase tracking-widest font-bold mb-10 ${
-            isDark ? 'text-blue-400' : 'text-blue-600'
-          }`}>Education</h2>
+        {/* --- TECH STACK (MATCHING USER SCREENSHOT) --- */}
+        <section id="skills" className="space-y-6">
+          <h2 className={`text-2xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-zinc-950'}`}>
+            Tech Stack
+          </h2>
 
-          <div className="space-y-6">
-            {EDUCATION_TIMELINE.map((edu) => (
-              <div 
-                key={edu.id} 
-                className={`group relative overflow-hidden rounded-3xl border p-6 transition-all duration-300 ${
+          <div className="flex flex-wrap gap-2.5 sm:gap-3">
+            {TECH_STACK.map((tech) => (
+              <div
+                key={tech.name}
+                className={`inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl border transition-all hover:scale-105 select-none ${
                   isDark 
-                    ? 'border-zinc-800 bg-zinc-900/90 hover:border-blue-500/40' 
-                    : 'border-zinc-200 bg-white shadow-sm hover:border-blue-500'
+                    ? 'bg-zinc-900/80 border-zinc-800 text-white hover:border-zinc-700 hover:bg-zinc-800/90' 
+                    : 'bg-white border-zinc-200 text-zinc-900 hover:border-zinc-300 shadow-sm'
                 }`}
               >
-                <div className="relative z-10 space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                    <div>
-                      <h3 className={`text-2xl font-bold tracking-tight italic ${
-                        isDark ? 'text-white' : 'text-zinc-900'
-                      }`}>{edu.degree}</h3>
-                      <span className={`text-[10px] uppercase font-mono tracking-widest block mt-1 ${
-                        isDark ? 'text-zinc-400' : 'text-zinc-600 font-semibold'
-                      }`}>{edu.institution}</span>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={`text-[10px] font-mono uppercase tracking-wider px-3 py-1 rounded-lg border font-bold ${
-                        isDark ? 'bg-zinc-800 border-zinc-700 text-zinc-300' : 'bg-zinc-100 border-zinc-200 text-zinc-700'
-                      }`}>{edu.year}</span>
-                      <span className={`text-[10px] font-mono uppercase tracking-wider px-3 py-1 rounded-lg border font-bold ${
-                        isDark ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-blue-50 border-blue-200 text-blue-600'
-                      }`}>{edu.status}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {edu.highlights.map(h => (
-                      <span 
-                        key={h} 
-                        className={`text-[9px] font-mono border px-2 py-0.5 rounded-lg uppercase font-bold ${
-                          isDark ? 'border-zinc-800 text-zinc-300 bg-zinc-950' : 'border-zinc-200 text-zinc-700 bg-zinc-100'
-                        }`}
-                      >
-                        {h}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                {tech.logo}
+                <span className="text-xs sm:text-sm font-medium tracking-tight">
+                  {tech.name}
+                </span>
               </div>
             ))}
           </div>
         </section>
 
-        {/* --- CERTIFICATIONS & LICENSES --- */}
-        <section className={`py-32 border-t ${isDark ? 'border-white/5' : 'border-slate-400/60'}`}>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        {/* --- CERTIFICATIONS & VERIFIED CREDENTIALS --- */}
+        <section id="certificates" className="space-y-6" data-gravity>
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className={`text-xs font-mono uppercase tracking-widest font-bold mb-2 ${
-                isDark ? 'text-blue-400' : 'text-blue-600'
-              }`}>Certifications & Licenses</h2>
-              <p className={`text-xs ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>Verified credentials & technical certifications from LinkedIn.</p>
+              <h2 className={`text-xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-zinc-950'}`}>
+                Certifications
+              </h2>
+              <p className={`text-xs mt-0.5 ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                Official training programs and verified technical certificates.
+              </p>
             </div>
-            <a 
-              href={SYSTEM_CONFIG.linkedin} 
-              target="_blank" 
+            <a
+              href={SYSTEM_CONFIG.linkedin}
+              target="_blank"
               rel="noopener noreferrer"
-              className={`inline-flex items-center gap-2 text-xs font-mono font-bold hover:underline ${
-                isDark ? 'text-blue-400' : 'text-blue-600'
-              }`}
+              className="text-xs font-semibold text-zinc-400 hover:text-white flex items-center gap-1 transition-colors"
             >
-              <span>View All on LinkedIn</span>
-              <ExternalLink size={14} />
+              <span>LinkedIn</span>
+              <ExternalLink size={12} />
             </a>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {CERTIFICATES.map((cert) => (
-              <div 
-                key={cert.id} 
-                className={`group relative overflow-hidden rounded-3xl border p-6 flex flex-col justify-between transition-all duration-300 ${
-                  isDark 
-                    ? 'border-zinc-800 bg-zinc-900/90 hover:border-blue-500/40' 
-                    : 'border-zinc-200 bg-white shadow-sm hover:border-blue-500'
+              <div
+                key={cert.id}
+                className={`rounded-2xl border overflow-hidden flex flex-col justify-between transition-all group ${
+                  isDark ? 'bg-zinc-900/40 border-zinc-800 hover:border-zinc-700' : 'bg-white border-zinc-200 hover:border-zinc-300 shadow-sm'
                 }`}
               >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-md border font-bold ${
-                      isDark ? 'bg-zinc-800 border-zinc-700 text-blue-400' : 'bg-zinc-100 border-zinc-200 text-blue-600'
-                    }`}>Issued {cert.issued}</span>
-                    <a 
-                      href={cert.linkedinUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className={`p-1.5 rounded-lg transition-colors ${
-                        isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-900'
-                      }`}
-                      title="Verify on LinkedIn"
-                    >
-                      <ExternalLink size={14} />
-                    </a>
-                  </div>
-
-                  <div>
-                    <h3 className={`text-lg font-bold tracking-tight italic ${
-                      isDark ? 'text-white' : 'text-zinc-900'
-                    }`}>{cert.title}</h3>
-                    <span className={`text-[10px] uppercase font-mono tracking-widest block mt-1 ${
-                      isDark ? 'text-zinc-400' : 'text-zinc-600 font-semibold'
-                    }`}>{cert.issuer}</span>
-
-                    {cert.credentialId && (
-                      <span className={`text-[9px] font-mono block mt-2 truncate ${
-                        isDark ? 'text-zinc-500' : 'text-zinc-500'
-                      }`}>
-                        ID: {cert.credentialId}
-                      </span>
-                    )}
-                  </div>
+                {/* CLEAN DOCUMENT PREVIEW */}
+                <div 
+                  onClick={() => setSelectedCert(cert)}
+                  className="cursor-pointer overflow-hidden bg-zinc-950 aspect-[16/11] relative"
+                >
+                  {cert.imageUrl ? (
+                    <img
+                      src={cert.imageUrl}
+                      alt={cert.title}
+                      className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center p-4 text-xs text-zinc-500">
+                      Certificate Preview
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 pt-6">
-                  {cert.skills.map(s => (
-                    <span 
-                      key={s} 
-                      className={`text-[9px] font-mono border px-2 py-0.5 rounded-lg uppercase font-bold ${
-                        isDark ? 'border-zinc-800 text-zinc-400 bg-zinc-950' : 'border-zinc-200 text-zinc-600 bg-zinc-100'
+                {/* DETAILS */}
+                <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono text-zinc-500 block">
+                      {cert.issued}
+                    </span>
+                    <h3 className={`text-sm font-bold tracking-tight leading-snug line-clamp-2 ${
+                      isDark ? 'text-white' : 'text-zinc-900'
+                    }`}>
+                      {cert.title}
+                    </h3>
+                    <p className="text-xs text-zinc-400 font-medium">
+                      {cert.issuer}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between text-xs">
+                    {cert.pdfUrl && (
+                      <a
+                        href={cert.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-zinc-400 hover:text-white font-medium flex items-center gap-1 transition-colors"
+                      >
+                        <FileText size={12} />
+                        <span>View PDF</span>
+                      </a>
+                    )}
+                    <button
+                      onClick={() => setSelectedCert(cert)}
+                      className={`text-xs transition-colors ${
+                        isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'
                       }`}
                     >
-                      {s}
-                    </span>
-                  ))}
+                      Inspect
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
+        {/* --- CONTACT & FOOTER --- */}
+        <footer id="contact" className="pt-12 pb-16 border-t border-zinc-200 dark:border-zinc-800/80 space-y-8 scroll-mt-20">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="space-y-1">
+              <h3 className={`text-xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-zinc-950'}`}>
+                Let&apos;s build something together.
+              </h3>
+              <p className={`text-xs ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                Available for hardware engineering roles, firmware projects, and circuit collaboration.
+              </p>
+            </div>
 
-
-        {/* --- CONTACT HUB --- */}
-        <section className={`py-32 border-t ${isDark ? 'border-white/5' : 'border-slate-400/60'}`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <h3 className={`text-4xl font-bold tracking-tight leading-none ${
-              isDark ? 'text-white' : 'text-slate-950'
-            }`}>
-              Get in Touch
-            </h3>
-            
-            <div className={`flex flex-col gap-6 font-mono text-xs ${
-              isDark ? 'text-gray-400' : 'text-slate-900'
-            }`}>
-              {/* GMAIL LINK + COPY BUTTON */}
-              <div className="flex items-center gap-4 group">
-                <a 
-                  href={`https://mail.google.com/mail/?view=cm&fs=1&to=${SYSTEM_CONFIG.email}`} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={`transition-colors flex items-center gap-4 ${
-                    isDark ? 'hover:text-white' : 'hover:text-slate-950 font-bold'
-                  }`}
-                >
-                  <span className="text-blue-500 font-bold">Email:</span> {SYSTEM_CONFIG.email}
-                </a>
-                
-                <button 
-                  onClick={copyEmail}
-                  className={`p-2 rounded-lg transition-all ${
-                    isDark 
-                      ? 'bg-white/5 text-white/40 hover:text-white hover:bg-white/10' 
-                      : 'bg-slate-700 text-slate-200 hover:text-white hover:bg-slate-800'
-                  }`}
-                  title="Copy Email"
-                >
-                  {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
-                </button>
-              </div>
-
-              {/* LINKEDIN LINK */}
-              <a 
-                href={SYSTEM_CONFIG.linkedin} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={`transition-colors flex items-center gap-4 group ${
-                  isDark ? 'hover:text-white' : 'hover:text-slate-950 font-bold'
+            <div className="flex items-center gap-3">
+              <button
+                onClick={copyEmail}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold border flex items-center gap-2 transition-all ${
+                  isDark 
+                    ? 'border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-200' 
+                    : 'border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 shadow-sm'
                 }`}
               >
-                <span className="text-blue-500 font-bold group-hover:translate-x-1 transition-transform">LinkedIn:</span> /in/{SYSTEM_CONFIG.linkedin.split('/').pop()}
+                {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                <span>{copied ? 'Copied to clipboard' : 'Copy Email'}</span>
+              </button>
+
+              <a
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${SYSTEM_CONFIG.email}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm ${
+                  isDark 
+                    ? 'bg-zinc-100 text-zinc-900 hover:bg-white' 
+                    : 'bg-zinc-900 text-white hover:bg-zinc-800'
+                }`}
+              >
+                Send Email
               </a>
             </div>
           </div>
-        </section>
-      </div>
 
-      {/* --- PROJECT SPECS / SCHEMATICS DRAWER MODAL --- */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-zinc-500 pt-6 border-t border-zinc-200/60 dark:border-zinc-800/60">
+            <p className="flex items-center gap-1">
+              © {new Date().getFullYear()} {SYSTEM_CONFIG.name}. Built with Next.js & Tailwind CSS.
+              <Link 
+                href="/bday" 
+                aria-label="Secret"
+                title="✦"
+                className="opacity-20 hover:opacity-80 transition-opacity text-[11px] ml-1 select-none cursor-default"
+              >
+                ✦
+              </Link>
+            </p>
+            <div className="flex items-center gap-4">
+              <a href={SYSTEM_CONFIG.github} target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
+              <a href={SYSTEM_CONFIG.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">LinkedIn</a>
+              <Link href="/tools" className="hover:underline text-zinc-400 hover:text-white">EE Tools</Link>
+              <Link href="/arcade" className="hover:underline text-amber-500">Arcade</Link>
+            </div>
+          </div>
+        </footer>
+      </main>
+
+      {/* --- PROJECT SPECS MODAL --- */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
-              initial={{ scale: 0.95, y: 20 }}
+              initial={{ scale: 0.96, y: 15 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
+              exit={{ scale: 0.96, y: 15 }}
               onClick={(e) => e.stopPropagation()}
-              className={`w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-3xl p-6 md:p-8 border shadow-2xl font-mono ${
-                isDark 
-                  ? 'bg-[#0a0a0a] border-white/15 text-gray-300 shadow-blue-500/10' 
-                  : 'bg-[#cbd5e1] border-slate-500 text-slate-950 shadow-2xl'
+              className={`w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl p-6 sm:p-8 border shadow-xl relative ${
+                isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-200' : 'bg-white border-zinc-200 text-zinc-900'
               }`}
             >
-              {/* MODAL HEADER */}
-              <div className="flex items-center justify-between border-b pb-4 border-blue-500/20">
+              <button
+                onClick={() => setSelectedProject(null)}
+                className={`absolute top-5 right-5 p-1.5 rounded-lg border transition-all ${
+                  isDark ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300' : 'border-zinc-200 bg-zinc-100 hover:bg-zinc-200 text-zinc-700'
+                }`}
+              >
+                <X size={16} />
+              </button>
+
+              <div className="space-y-6">
                 <div>
-                  <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest block">[ SPECS_MANIFEST ]</span>
-                  <h2 className={`text-2xl font-bold tracking-tighter italic ${isDark ? 'text-white' : 'text-slate-950'}`}>
-                    {selectedProject.title}
-                  </h2>
+                  <span className="text-xs font-mono text-zinc-400 uppercase font-semibold">Technical Specifications</span>
+                  <h3 className="text-2xl font-bold tracking-tight mt-1">{selectedProject.title}</h3>
+                  <p className="text-xs text-zinc-500 font-mono mt-0.5">{selectedProject.tech}</p>
                 </div>
 
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className={`p-2 rounded-xl border transition-all ${
-                    isDark ? 'bg-white/5 border-white/10 hover:bg-white/10 text-white' : 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-900'
-                  }`}
-                  aria-label="Close Specs Modal"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* MINIMAL MATERIALS, QUANTITY & PURPOSE LIST */}
-              <div className="mt-6 space-y-3 text-xs">
-                {selectedProject.bom.map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className={`p-3.5 rounded-xl border transition-all ${
-                      isDark 
-                        ? 'bg-white/[0.02] border-white/5 hover:border-white/10 text-gray-300' 
-                        : 'bg-[#e2e8f0] border-slate-400 hover:border-slate-500 text-slate-950 font-medium'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-sm tracking-wide">{item.component}</span>
-                      <span className="font-mono text-blue-500 font-bold text-xs bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
-                        x{item.qty}
-                      </span>
-                    </div>
-                    <p className={`text-[11px] mt-1.5 leading-relaxed font-sans ${
-                      isDark ? 'text-gray-400' : 'text-slate-700'
-                    }`}>
-                      {item.reason}
-                    </p>
+                {/* PINOUT MAPPINGS */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-mono uppercase font-bold text-zinc-400">Microcontroller Pinout Routing</h4>
+                  <div className={`rounded-xl border overflow-hidden ${isDark ? 'border-zinc-800' : 'border-zinc-200'}`}>
+                    <table className="w-full text-xs text-left">
+                      <thead className={`font-mono border-b ${isDark ? 'bg-zinc-950/60 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200 text-zinc-600'}`}>
+                        <tr>
+                          <th className="p-2.5">ESP32 Pin</th>
+                          <th className="p-2.5">Component Target</th>
+                          <th className="p-2.5">Bus Protocol</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/80 font-mono">
+                        {selectedProject.pinouts.map((pin, i) => (
+                          <tr key={i}>
+                            <td className="p-2.5 text-white font-bold">{pin.pin}</td>
+                            <td className="p-2.5">{pin.target}</td>
+                            <td className="p-2.5 text-zinc-500">{pin.bus}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                ))}
+                </div>
+
+                {/* BILL OF MATERIALS */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-mono uppercase font-bold text-zinc-400">Bill of Materials (BOM)</h4>
+                  <div className={`rounded-xl border overflow-hidden ${isDark ? 'border-zinc-800' : 'border-zinc-200'}`}>
+                    <table className="w-full text-xs text-left">
+                      <thead className={`font-mono border-b ${isDark ? 'bg-zinc-950/60 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200 text-zinc-600'}`}>
+                        <tr>
+                          <th className="p-2.5">Component</th>
+                          <th className="p-2.5">Specification & Role</th>
+                          <th className="p-2.5 text-right">Qty</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/80">
+                        {selectedProject.bom.map((item, i) => (
+                          <tr key={i}>
+                            <td className="p-2.5 font-semibold text-zinc-200">{item.component}</td>
+                            <td className="p-2.5 text-zinc-400">{item.reason}</td>
+                            <td className="p-2.5 text-right font-mono text-zinc-500">{item.qty}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => setSelectedProject(null)}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+                  >
+                    Close Specs
+                  </button>
+                  {selectedProject.liveUrl && (
+                    <a
+                      href={selectedProject.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-zinc-200 text-zinc-950 font-semibold shadow flex items-center gap-1.5 transition-colors"
+                    >
+                      <span>Open Live Project</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  )}
+                </div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* --- INTERACTIVE PROBAL TERMINAL (EASTER EGG) --- */}
-      <ProbalTerminal isDark={isDark} />
-    </main>
+      {/* --- CERTIFICATE PREVIEW MODAL --- */}
+      <AnimatePresence>
+        {selectedCert && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            onClick={() => setSelectedCert(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.96, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.96, y: 15 }}
+              onClick={(e) => e.stopPropagation()}
+              className={`w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 sm:p-8 border shadow-2xl relative ${
+                isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-200' : 'bg-white border-zinc-200 text-zinc-900'
+              }`}
+            >
+              <button
+                onClick={() => setSelectedCert(null)}
+                className={`absolute top-5 right-5 p-1.5 rounded-lg border transition-all ${
+                  isDark ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300' : 'border-zinc-200 bg-zinc-100 hover:bg-zinc-200 text-zinc-700'
+                }`}
+              >
+                <X size={16} />
+              </button>
+
+              <div className="space-y-5">
+                {/* DOCUMENT PREVIEW */}
+                {selectedCert.imageUrl && (
+                  <div className="rounded-xl overflow-hidden border border-zinc-800 bg-black/50 flex items-center justify-center p-2">
+                    <img
+                      src={selectedCert.imageUrl}
+                      alt={selectedCert.title}
+                      className="w-full max-h-[50vh] object-contain rounded-lg"
+                    />
+                  </div>
+                )}
+
+                {/* METADATA */}
+                <div className="space-y-2">
+                  <span className="text-xs font-mono uppercase text-zinc-400 font-semibold">Official Credential</span>
+                  <h3 className="text-xl font-bold tracking-tight">{selectedCert.title}</h3>
+                  <p className="text-xs text-zinc-400">
+                    Issued by <strong className="text-zinc-200 font-semibold">{selectedCert.issuer}</strong> · Date: {selectedCert.issued}
+                  </p>
+                  {selectedCert.credentialId && (
+                    <p className="text-xs font-mono text-zinc-500">ID: {selectedCert.credentialId}</p>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {selectedCert.skills.map((s) => (
+                    <span
+                      key={s}
+                      className={`text-xs px-2.5 py-0.5 rounded border font-mono ${
+                        isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-300' : 'bg-zinc-100 border-zinc-200 text-zinc-700'
+                      }`}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+
+                {/* ACTIONS */}
+                <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between flex-wrap gap-3">
+                  <a
+                    href={selectedCert.verificationUrl || selectedCert.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                      isDark ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-200' : 'border-zinc-200 bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
+                    }`}
+                  >
+                    <span>Verify Online</span>
+                    <ExternalLink size={12} />
+                  </a>
+
+                  {selectedCert.pdfUrl && (
+                    <a
+                      href={selectedCert.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-zinc-200 text-zinc-950 font-semibold shadow flex items-center gap-1.5 transition-colors"
+                    >
+                      <FileText size={13} />
+                      <span>Open PDF</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- PROBAL TERMINAL CHAT / EASTER EGG --- */}
+      <ProbalTerminal 
+        isDark={isDark} 
+        isOpen={isTerminalOpen} 
+        setIsOpen={setIsTerminalOpen} 
+        hideFloatingTrigger={true} 
+      />
+    </div>
   );
 }

@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     siteName: "Probal Khanra Portfolio",
     images: [
       {
-        url: "/profile.png",
+        url: "/profile.jpg",
         width: 800,
         height: 800,
         alt: "Probal Khanra Profile",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Probal Khanra | Electrical Engineer & Embedded Systems",
     description: "Engineering physical systems with digital precision. Focused on Embedded Systems, IoT, and PCB Design.",
-    images: ["/profile.png"],
+    images: ["/profile.jpg"],
   },
 };
 
@@ -63,7 +63,7 @@ export default function RootLayout({
     "@type": "Person",
     "name": "Probal Khanra",
     "url": "https://probal-khanra.vercel.app",
-    "image": "https://probal-khanra.vercel.app/profile.png",
+    "image": "https://probal-khanra.vercel.app/profile.jpg",
     "jobTitle": "Electrical Engineer & Embedded Systems Specialist",
     "alumniOf": {
       "@type": "EducationalOrganization",

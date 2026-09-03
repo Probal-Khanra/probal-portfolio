@@ -18,7 +18,8 @@ import {
   ChevronUp,
   ChevronDown,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Wrench
 } from 'lucide-react';
 
 type GameMode = 'snake' | 'fruit-ninja' | 'brick-breaker' | 'flappy-chip';
@@ -40,141 +41,169 @@ export default function ArcadePage() {
   }, []);
 
   return (
-    <main className={`min-h-screen font-sans selection:bg-blue-500/20 transition-colors duration-500 relative ${
-      isDark ? 'bg-[#09090b] text-zinc-200' : 'bg-[#f4f4f5] text-zinc-900'
+    <div className={`min-h-screen transition-colors duration-300 font-sans ${
+      isDark ? 'bg-[#030712] text-zinc-300' : 'bg-[#fafafa] text-zinc-800'
     }`}>
-      {/* ARCADE HEADER BAR */}
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-md px-6 py-4 flex items-center justify-between transition-colors ${
-        isDark ? 'bg-[#09090b]/80 border-zinc-800' : 'bg-white/80 border-zinc-200 shadow-sm'
+      {/* --- UNIFIED TOP NAVIGATION (MATCHING MAIN SITE) --- */}
+      <header className={`sticky top-0 z-50 backdrop-blur-sm transition-colors ${
+        isDark ? 'bg-[#030712]/80 border-b border-zinc-800/60' : 'bg-white/80 border-b border-zinc-200/60'
       }`}>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className={`px-4 py-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${
-              isDark ? 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800 hover:bg-zinc-50 shadow-sm'
-            }`}
-          >
-            <ArrowLeft size={16} />
-            <span>Back to Portfolio</span>
-          </Link>
+        <div className="mx-auto max-w-3xl px-4 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 sm:gap-6 overflow-x-auto no-scrollbar">
+            <Link
+              href="/"
+              aria-label="Back to Portfolio"
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 ${
+                isDark
+                  ? 'bg-zinc-900 border-zinc-700/80 text-white hover:bg-zinc-800 shadow-sm'
+                  : 'bg-white border-zinc-300 text-zinc-900 hover:bg-zinc-100 shadow-sm'
+              }`}
+            >
+              <ArrowLeft size={14} className="stroke-[2.5]" />
+              <span>portfolio</span>
+            </Link>
 
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600">
-              <Gamepad2 size={20} />
-            </div>
-            <div>
-              <h1 className={`text-base font-bold tracking-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>
-                Hardware Arcade
-              </h1>
-              <p className="text-xs text-zinc-500 font-medium">Butter-smooth relaxed retro mini-games</p>
-            </div>
+            <nav className="flex items-center gap-3.5 sm:gap-6 text-xs sm:text-sm lowercase whitespace-nowrap">
+              <Link href="/#showcase" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>projects</Link>
+              <Link href="/#skills" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>tech stack</Link>
+              <Link href="/contact" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>contact</Link>
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <Link
+              href="/tools"
+              aria-label="EE Workbench Tools"
+              title="EE Workbench Tools"
+              className={`inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md transition-colors ${
+                isDark ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/60' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100'
+              }`}
+            >
+              <Wrench size={18} />
+            </Link>
+
+            <Link
+              href="/arcade"
+              aria-label="Arcade Games"
+              title="Micro-Arcade Games (Active)"
+              className={`inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md transition-colors ${
+                isDark ? 'bg-zinc-800 text-white shadow-sm' : 'bg-zinc-200 text-zinc-950 font-semibold shadow-sm'
+              }`}
+            >
+              <Gamepad2 size={18} />
+            </Link>
+
+            <button
+              onClick={toggleTheme}
+              aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+              title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+              className={`inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md transition-colors ${
+                isDark ? 'text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/60' : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100'
+              }`}
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
           </div>
         </div>
-
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle Dark/Light Mode"
-          className={`p-2.5 rounded-xl border backdrop-blur-md transition-all hover:scale-105 ${
-            isDark 
-              ? 'bg-zinc-900 border-zinc-800 text-amber-400 hover:bg-zinc-800' 
-              : 'bg-white border-zinc-200 text-zinc-800 hover:bg-zinc-50 shadow-sm'
-          }`}
-        >
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
       </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
-        {/* GAME TAB SELECTOR */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button
-            onClick={() => setActiveGame('snake')}
-            className={`p-4 rounded-2xl border text-left transition-all flex items-center gap-3 ${
-              activeGame === 'snake'
-                ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
-                : isDark 
-                ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-                : 'bg-white border-zinc-200 text-zinc-800 hover:bg-zinc-50 shadow-sm'
-            }`}
-          >
-            <div className={`p-2.5 rounded-xl ${activeGame === 'snake' ? 'bg-white/20' : 'bg-emerald-500/10 text-emerald-500'}`}>
-              <Grid size={20} />
-            </div>
-            <div>
-              <span className="text-sm font-bold block">PCB Snake</span>
-              <span className="text-[11px] opacity-80 block">Polished relaxed trace</span>
-            </div>
-          </button>
+      {/* --- CONTENT CONTAINER CONSTRAINED TO MAX-W-3XL --- */}
+      <main className="max-w-3xl mx-auto px-4 sm:px-8 py-6 sm:py-8 space-y-6">
+        {/* MINIMAL GAME TAB SELECTOR (LABELS UNDER ICONS) */}
+        <nav aria-label="Game Selection" className="w-full">
+          <div className={`p-1.5 rounded-2xl border backdrop-blur-xl grid grid-cols-4 gap-1.5 transition-all ${
+            isDark ? 'bg-zinc-900/80 border-zinc-800' : 'bg-white/80 border-zinc-200 shadow-sm'
+          }`}>
+            <button
+              onClick={() => setActiveGame('snake')}
+              className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
+                activeGame === 'snake'
+                  ? isDark 
+                    ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                    : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
+                  : isDark 
+                    ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
+              }`}
+            >
+              <Grid size={18} className={activeGame === 'snake' ? 'text-white' : ''} />
+              <span className="text-[11px] sm:text-xs font-medium tracking-tight">Snake</span>
+            </button>
 
-          <button
-            onClick={() => setActiveGame('fruit-ninja')}
-            className={`p-4 rounded-2xl border text-left transition-all flex items-center gap-3 ${
-              activeGame === 'fruit-ninja'
-                ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
-                : isDark 
-                ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-                : 'bg-white border-zinc-200 text-zinc-800 hover:bg-zinc-50 shadow-sm'
-            }`}
-          >
-            <div className={`p-2.5 rounded-xl ${activeGame === 'fruit-ninja' ? 'bg-white/20' : 'bg-rose-500/10 text-rose-500'}`}>
-              <Scissors size={20} />
-            </div>
-            <div>
-              <span className="text-sm font-bold block">Fruit Slicer</span>
-              <span className="text-[11px] opacity-80 block">Bouncy float arc slicing</span>
-            </div>
-          </button>
+            <button
+              onClick={() => setActiveGame('fruit-ninja')}
+              className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
+                activeGame === 'fruit-ninja'
+                  ? isDark 
+                    ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                    : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
+                  : isDark 
+                    ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
+              }`}
+            >
+              <Scissors size={18} className={activeGame === 'fruit-ninja' ? 'text-white' : ''} />
+              <span className="text-[11px] sm:text-xs font-medium tracking-tight">Slicer</span>
+            </button>
 
-          <button
-            onClick={() => setActiveGame('brick-breaker')}
-            className={`p-4 rounded-2xl border text-left transition-all flex items-center gap-3 ${
-              activeGame === 'brick-breaker'
-                ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
-                : isDark 
-                ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-                : 'bg-white border-zinc-200 text-zinc-800 hover:bg-zinc-50 shadow-sm'
-            }`}
-          >
-            <div className={`p-2.5 rounded-xl ${activeGame === 'brick-breaker' ? 'bg-white/20' : 'bg-amber-500/10 text-amber-500'}`}>
-              <Box size={20} />
-            </div>
-            <div>
-              <span className="text-sm font-bold block">Brick Breaker</span>
-              <span className="text-[11px] opacity-80 block">Smooth paddle bounce</span>
-            </div>
-          </button>
+            <button
+              onClick={() => setActiveGame('brick-breaker')}
+              className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
+                activeGame === 'brick-breaker'
+                  ? isDark 
+                    ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                    : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
+                  : isDark 
+                    ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
+              }`}
+            >
+              <Box size={18} className={activeGame === 'brick-breaker' ? 'text-white' : ''} />
+              <span className="text-[11px] sm:text-xs font-medium tracking-tight">Breaker</span>
+            </button>
 
-          <button
-            onClick={() => setActiveGame('flappy-chip')}
-            className={`p-4 rounded-2xl border text-left transition-all flex items-center gap-3 ${
-              activeGame === 'flappy-chip'
-                ? 'bg-blue-600 border-blue-500 text-white shadow-md shadow-blue-600/20'
-                : isDark 
-                ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' 
-                : 'bg-white border-zinc-200 text-zinc-800 hover:bg-zinc-50 shadow-sm'
-            }`}
-          >
-            <div className={`p-2.5 rounded-xl ${activeGame === 'flappy-chip' ? 'bg-white/20' : 'bg-cyan-500/10 text-cyan-500'}`}>
-              <Sparkles size={20} />
-            </div>
-            <div>
-              <span className="text-sm font-bold block">Flappy Chip</span>
-              <span className="text-[11px] opacity-80 block">Feather float gravity</span>
-            </div>
-          </button>
-        </div>
+            <button
+              onClick={() => setActiveGame('flappy-chip')}
+              className={`py-2 sm:py-2.5 px-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center gap-1 text-center select-none ${
+                activeGame === 'flappy-chip'
+                  ? isDark 
+                    ? 'bg-zinc-800 text-white font-bold border border-zinc-700 shadow-sm' 
+                    : 'bg-zinc-900 text-white font-bold border border-zinc-900 shadow-sm'
+                  : isDark 
+                    ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/40' 
+                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
+              }`}
+            >
+              <Zap size={18} className={activeGame === 'flappy-chip' ? 'text-white' : ''} />
+              <span className="text-[11px] sm:text-xs font-medium tracking-tight">Flappy</span>
+            </button>
+          </div>
+        </nav>
 
-        {/* ACTIVE GAME VIEWPORT CARD - EXPANDED VIEWPORT HEIGHT */}
-        <div className={`p-6 md:p-8 rounded-3xl border shadow-sm transition-all ${
-          isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'
+        {/* ACTIVE GAME CANVAS CONTAINER */}
+        <div className={`rounded-2xl border p-4 sm:p-6 transition-all ${
+          isDark ? 'bg-zinc-950/60 border-zinc-800/90' : 'bg-white border-zinc-200 shadow-sm'
         }`}>
           {activeGame === 'snake' && <SnakeGame isDark={isDark} />}
           {activeGame === 'fruit-ninja' && <FruitNinjaGame isDark={isDark} />}
           {activeGame === 'brick-breaker' && <BrickBreakerGame isDark={isDark} />}
           {activeGame === 'flappy-chip' && <FlappyChipGame isDark={isDark} />}
         </div>
-      </div>
-    </main>
+
+        {/* SUBTLE FOOTER */}
+        <footer className="flex items-center justify-between text-xs text-zinc-500 pt-4">
+          <p>© {new Date().getFullYear()} Probal Khanra</p>
+          <Link 
+            href="/bday" 
+            aria-label="Secret"
+            title="✦"
+            className="opacity-20 hover:opacity-80 transition-opacity text-[11px] select-none cursor-default"
+          >
+            ✦
+          </Link>
+        </footer>
+      </main>
+    </div>
   );
 }
 
@@ -199,6 +228,8 @@ function SnakeGame({ isDark }: { isDark: boolean }) {
     lastStepTime: 0,
   });
 
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
   useEffect(() => {
     const saved = localStorage.getItem('arcade_snake_hs');
     if (saved) setHighScore(parseInt(saved, 10));
@@ -211,6 +242,35 @@ function SnakeGame({ isDark }: { isDark: boolean }) {
     }
     return newFood;
   }, []);
+
+  const handleDirection = useCallback((dx: number, dy: number) => {
+    const g = gameRef.current;
+    if (g.dir.x + dx !== 0 || g.dir.y + dy !== 0) {
+      g.nextDir = { x: dx, y: dy };
+    }
+  }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current || !e.changedTouches.length) return;
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    if (Math.max(absDx, absDy) > 20) {
+      if (absDx > absDy) {
+        handleDirection(dx > 0 ? 1 : -1, 0);
+      } else {
+        handleDirection(0, dy > 0 ? 1 : -1);
+      }
+    }
+    touchStartRef.current = null;
+  };
 
   const startGame = () => {
     const g = gameRef.current;
@@ -226,13 +286,6 @@ function SnakeGame({ isDark }: { isDark: boolean }) {
     setGameOver(false);
     setGameStarted(true);
   };
-
-  const handleDirection = useCallback((dx: number, dy: number) => {
-    const g = gameRef.current;
-    if (g.dir.x + dx !== 0 || g.dir.y + dy !== 0) {
-      g.nextDir = { x: dx, y: dy };
-    }
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -438,58 +491,85 @@ function SnakeGame({ isDark }: { isDark: boolean }) {
   }, [isDark, spawnFood]);
 
   return (
-    <div className="space-y-6">
-      {/* SCORES BAR */}
-      <div className={`flex flex-wrap justify-between items-center p-4 rounded-2xl border text-sm font-semibold ${
-        isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
+    <div className="space-y-4">
+      {/* MINIMAL SCORE BAR */}
+      <div className={`flex justify-between items-center px-4 py-2.5 rounded-xl border text-xs font-mono font-semibold ${
+        isDark ? 'bg-zinc-950/80 border-zinc-800 text-zinc-300' : 'bg-zinc-100/90 border-zinc-200 text-zinc-700'
       }`}>
-        <div className="flex items-center gap-2">
-          <Trophy size={18} className="text-amber-500" />
-          <span>High Score: <span className="text-amber-500 font-bold">{highScore}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Trophy size={14} className="text-amber-500" />
+          <span>BEST: <strong className="text-amber-500">{highScore}</strong></span>
         </div>
-        <div className="flex items-center gap-2">
-          <Zap size={18} className="text-blue-500" />
-          <span>Score: <span className="text-blue-500 font-bold">{score}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Zap size={14} className="text-white" />
+          <span>SCORE: <strong className="text-white">{score}</strong></span>
         </div>
       </div>
 
-      {/* BIGGER VIEWPORT HEIGHT (h-[460px]) */}
-      <div className="relative w-full h-[460px] rounded-3xl border overflow-hidden bg-black border-zinc-800">
-        <canvas ref={canvasRef} width={550} height={460} className="w-full h-full block" />
+      {/* RESPONSIVE VIEWPORT HEIGHT */}
+      <div className="relative w-full h-[320px] sm:h-[420px] rounded-2xl border overflow-hidden bg-black border-zinc-800 touch-none select-none">
+        <canvas 
+          ref={canvasRef} 
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          width={550} 
+          height={420} 
+          className="w-full h-full block cursor-pointer" 
+        />
 
         {(!gameStarted || gameOver) && (
-          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-6 text-center space-y-4">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Grid size={22} className="text-emerald-500" /> PCB Trace Snake
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-3">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Grid size={20} className="text-emerald-500" /> PCB Trace Snake
             </h3>
-            <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
-              {gameOver ? `Game Over! Final Score: ${score}` : 'Navigate the PCB trace using Arrow keys or touch controls to eat IC microchips!'}
+            <p className="text-xs text-zinc-400 max-w-xs leading-relaxed">
+              {gameOver 
+                ? `Game Over! Final Score: ${score}` 
+                : 'Swipe anywhere or use D-pad / Arrow keys to navigate the PCB trace and eat IC chips!'}
             </p>
             <button
               onClick={startGame}
-              className="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-2 shadow-md shadow-blue-600/30 transition-all hover:scale-105"
+              className="px-6 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs flex items-center gap-2 shadow-md transition-all hover:scale-105"
             >
-              {gameOver ? <RotateCcw size={16} /> : <Play size={16} />}
-              {gameOver ? 'Play Again' : 'Start Game'}
+              {gameOver ? <RotateCcw size={15} /> : <Play size={15} />}
+              <span>{gameOver ? 'Play Again' : 'Start Game'}</span>
             </button>
           </div>
         )}
       </div>
 
-      {/* MOBILE TOUCH D-PAD CONTROLS */}
-      <div className="flex flex-col items-center gap-2 sm:hidden pt-2">
-        <button onClick={() => handleDirection(0, -1)} className="p-3 rounded-xl bg-zinc-800 text-white border border-zinc-700 active:scale-95">
-          <ChevronUp size={20} />
-        </button>
-        <div className="flex gap-4">
-          <button onClick={() => handleDirection(-1, 0)} className="p-3 rounded-xl bg-zinc-800 text-white border border-zinc-700 active:scale-95">
-            <ChevronLeft size={20} />
+      {/* COMPACT MINIMAL MOBILE D-PAD */}
+      <div className="flex justify-center items-center sm:hidden pt-1">
+        <div className="grid grid-cols-3 gap-1.5 w-36">
+          <div />
+          <button 
+            onClick={() => handleDirection(0, -1)} 
+            aria-label="Up" 
+            className="p-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white flex items-center justify-center active:bg-zinc-700 transition-colors"
+          >
+            <ChevronUp size={18} />
           </button>
-          <button onClick={() => handleDirection(0, 1)} className="p-3 rounded-xl bg-zinc-800 text-white border border-zinc-700 active:scale-95">
-            <ChevronDown size={20} />
+          <div />
+          <button 
+            onClick={() => handleDirection(-1, 0)} 
+            aria-label="Left" 
+            className="p-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white flex items-center justify-center active:bg-zinc-700 transition-colors"
+          >
+            <ChevronLeft size={18} />
           </button>
-          <button onClick={() => handleDirection(1, 0)} className="p-3 rounded-xl bg-zinc-800 text-white border border-zinc-700 active:scale-95">
-            <ChevronRight size={20} />
+          <button 
+            onClick={() => handleDirection(0, 1)} 
+            aria-label="Down" 
+            className="p-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white flex items-center justify-center active:bg-zinc-700 transition-colors"
+          >
+            <ChevronDown size={18} />
+          </button>
+          <button 
+            onClick={() => handleDirection(1, 0)} 
+            aria-label="Right" 
+            className="p-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white flex items-center justify-center active:bg-zinc-700 transition-colors"
+          >
+            <ChevronRight size={18} />
           </button>
         </div>
       </div>
@@ -725,45 +805,49 @@ function FruitNinjaGame({ isDark }: { isDark: boolean }) {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className={`flex flex-wrap justify-between items-center p-4 rounded-2xl border text-sm font-semibold ${
-        isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
+    <div className="space-y-4">
+      {/* MINIMAL SCORE BAR */}
+      <div className={`flex justify-between items-center px-4 py-2.5 rounded-xl border text-xs font-mono font-semibold ${
+        isDark ? 'bg-zinc-950/80 border-zinc-800 text-zinc-300' : 'bg-zinc-100/90 border-zinc-200 text-zinc-700'
       }`}>
-        <div className="flex items-center gap-2">
-          <Trophy size={18} className="text-amber-500" />
-          <span>High Score: <span className="text-amber-500 font-bold">{highScore}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Trophy size={14} className="text-amber-500" />
+          <span>BEST: <strong className="text-amber-500">{highScore}</strong></span>
         </div>
-        <div className="flex items-center gap-2">
-          <Zap size={18} className="text-blue-500" />
-          <span>Score: <span className="text-blue-500 font-bold">{score}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Zap size={14} className="text-white" />
+          <span>SCORE: <strong className="text-white">{score}</strong></span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-rose-500 font-bold">❤️ Lives: {lives} / 3</span>
+        <div className="flex items-center gap-1">
+          <span className="text-zinc-400">LIVES:</span>
+          <span className="text-rose-500 tracking-widest font-bold">
+            {'❤️'.repeat(lives)}
+          </span>
         </div>
       </div>
 
-      {/* BIGGER VIEWPORT HEIGHT (h-[460px]) */}
+      {/* RESPONSIVE VIEWPORT HEIGHT */}
       <div
         ref={containerRef}
         onMouseMove={(e) => handlePointerMove(e.clientX, e.clientY)}
         onTouchMove={(e) => e.touches[0] && handlePointerMove(e.touches[0].clientX, e.touches[0].clientY)}
-        className="relative w-full h-[460px] rounded-3xl border overflow-hidden bg-black border-zinc-800 cursor-crosshair touch-none"
+        className="relative w-full h-[320px] sm:h-[420px] rounded-2xl border overflow-hidden bg-black border-zinc-800 cursor-crosshair touch-none select-none"
       >
         <canvas ref={canvasRef} className="w-full h-full block" />
 
         {!gameActive && (
-          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-6 text-center space-y-4">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Scissors size={22} className="text-rose-500" /> Fruit Slicer
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-3">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Scissors size={20} className="text-rose-500" /> Fruit Slicer
             </h3>
-            <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
-              Slice floating fruits with your mouse or finger drag! Avoid black bombs 💣!
+            <p className="text-xs text-zinc-400 max-w-xs leading-relaxed">
+              Drag mouse or swipe finger across floating items! Avoid black bombs 💣!
             </p>
             <button
               onClick={startGame}
-              className="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-2 shadow-md shadow-blue-600/30 transition-all hover:scale-105"
+              className="px-6 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs flex items-center gap-2 shadow-md transition-all hover:scale-105"
             >
-              <Play size={16} /> Start Game
+              <Play size={15} /> <span>Start Slicing</span>
             </button>
           </div>
         )}
@@ -939,42 +1023,43 @@ function BrickBreakerGame({ isDark }: { isDark: boolean }) {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className={`flex flex-wrap justify-between items-center p-4 rounded-2xl border text-sm font-semibold ${
-        isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
+    <div className="space-y-4">
+      {/* MINIMAL SCORE BAR */}
+      <div className={`flex justify-between items-center px-4 py-2.5 rounded-xl border text-xs font-mono font-semibold ${
+        isDark ? 'bg-zinc-950/80 border-zinc-800 text-zinc-300' : 'bg-zinc-100/90 border-zinc-200 text-zinc-700'
       }`}>
-        <div className="flex items-center gap-2">
-          <Trophy size={18} className="text-amber-500" />
-          <span>High Score: <span className="text-amber-500 font-bold">{highScore}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Trophy size={14} className="text-amber-500" />
+          <span>BEST: <strong className="text-amber-500">{highScore}</strong></span>
         </div>
-        <div className="flex items-center gap-2">
-          <Zap size={18} className="text-blue-500" />
-          <span>Score: <span className="text-blue-500 font-bold">{score}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Zap size={14} className="text-white" />
+          <span>SCORE: <strong className="text-white">{score}</strong></span>
         </div>
       </div>
 
-      {/* BIGGER VIEWPORT HEIGHT (h-[460px]) */}
+      {/* RESPONSIVE VIEWPORT HEIGHT */}
       <div
         ref={containerRef}
         onMouseMove={(e) => handlePointerMove(e.clientX)}
         onTouchMove={(e) => e.touches[0] && handlePointerMove(e.touches[0].clientX)}
-        className="relative w-full h-[460px] rounded-3xl border overflow-hidden bg-black border-zinc-800 cursor-crosshair touch-none"
+        className="relative w-full h-[320px] sm:h-[420px] rounded-2xl border overflow-hidden bg-black border-zinc-800 cursor-crosshair touch-none select-none"
       >
         <canvas ref={canvasRef} className="w-full h-full block" />
 
         {!gameActive && (
-          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-6 text-center space-y-4">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Box size={22} className="text-amber-500" /> Retro Brick Breaker
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-3">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Box size={20} className="text-amber-500" /> Retro Brick Breaker
             </h3>
-            <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
-              Move your paddle to bounce the ball and smash all colorful resistor bricks!
+            <p className="text-xs text-zinc-400 max-w-xs leading-relaxed">
+              Drag your paddle to bounce the ball and smash colorful resistor bricks!
             </p>
             <button
               onClick={startGame}
-              className="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-2 shadow-md shadow-blue-600/30 transition-all hover:scale-105"
+              className="px-6 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs flex items-center gap-2 shadow-md transition-all hover:scale-105"
             >
-              <Play size={16} /> Start Game
+              <Play size={15} /> <span>Start Game</span>
             </button>
           </div>
         )}
@@ -1152,42 +1237,43 @@ function FlappyChipGame({ isDark }: { isDark: boolean }) {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className={`flex flex-wrap justify-between items-center p-4 rounded-2xl border text-sm font-semibold ${
-        isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
+    <div className="space-y-4">
+      {/* MINIMAL SCORE BAR */}
+      <div className={`flex justify-between items-center px-4 py-2.5 rounded-xl border text-xs font-mono font-semibold ${
+        isDark ? 'bg-zinc-950/80 border-zinc-800 text-zinc-300' : 'bg-zinc-100/90 border-zinc-200 text-zinc-700'
       }`}>
-        <div className="flex items-center gap-2">
-          <Trophy size={18} className="text-amber-500" />
-          <span>High Score: <span className="text-amber-500 font-bold">{highScore}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Trophy size={14} className="text-amber-500" />
+          <span>BEST: <strong className="text-amber-500">{highScore}</strong></span>
         </div>
-        <div className="flex items-center gap-2">
-          <Zap size={18} className="text-blue-500" />
-          <span>Score: <span className="text-blue-500 font-bold">{score}</span></span>
+        <div className="flex items-center gap-1.5">
+          <Zap size={14} className="text-white" />
+          <span>SCORE: <strong className="text-white">{score}</strong></span>
         </div>
       </div>
 
-      {/* BIGGER VIEWPORT HEIGHT (h-[460px]) */}
+      {/* RESPONSIVE VIEWPORT HEIGHT */}
       <div
         ref={containerRef}
         onClick={flap}
         onTouchStart={flap}
-        className="relative w-full h-[460px] rounded-3xl border overflow-hidden bg-black border-zinc-800 cursor-pointer touch-none select-none"
+        className="relative w-full h-[320px] sm:h-[420px] rounded-2xl border overflow-hidden bg-black border-zinc-800 cursor-pointer touch-none select-none"
       >
         <canvas ref={canvasRef} className="w-full h-full block" />
 
         {!gameActive && (
-          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-6 text-center space-y-4">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Sparkles size={22} className="text-cyan-400" /> Flappy Microchip
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-3">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Sparkles size={20} className="text-cyan-400" /> Flappy Microchip
             </h3>
-            <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
-              Click, tap screen, or press Spacebar to flap your microchip gently through capacitor gaps!
+            <p className="text-xs text-zinc-400 max-w-xs leading-relaxed">
+              Tap screen, click, or press Spacebar to flap your microchip through capacitor gates!
             </p>
             <button
               onClick={startGame}
-              className="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-2 shadow-md shadow-blue-600/30 transition-all hover:scale-105"
+              className="px-6 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs flex items-center gap-2 shadow-md transition-all hover:scale-105"
             >
-              <Play size={16} /> Start Game
+              <Play size={15} /> <span>Start Game</span>
             </button>
           </div>
         )}
