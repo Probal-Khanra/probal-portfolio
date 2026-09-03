@@ -163,10 +163,10 @@ export default function ContactPage() {
             </div>
             <div>
               <p className={`text-base font-bold ${isDark ? 'text-white' : 'text-zinc-950'}`}>
-                Singur, Hooghly
+                Singur | Durgapur
               </p>
-              <p className="text-xs text-zinc-500 mt-1">
-                West Bengal, India · BCREC Durgapur
+              <p className="text-xs text-zinc-400 mt-1 font-medium">
+                WB, India
               </p>
             </div>
           </div>

@@ -207,6 +207,11 @@ export default function ProbalPortfolio() {
     if (savedTheme) {
       setTheme(savedTheme);
     }
+
+    if (typeof window !== 'undefined' && window.location.hash === '#about') {
+      history.replaceState(null, '', window.location.pathname);
+      window.scrollTo(0, 0);
+    }
   }, []);
 
   const toggleTheme = () => {
@@ -379,7 +384,17 @@ export default function ProbalPortfolio() {
       }`}>
         <div className="mx-auto max-w-3xl px-4 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between gap-2">
           <nav className="flex items-center gap-3.5 sm:gap-8 text-xs sm:text-sm lowercase overflow-x-auto no-scrollbar">
-            <a href="#about" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>home</a>
+            <button 
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (window.location.hash) {
+                  history.pushState(null, '', window.location.pathname);
+                }
+              }}
+              className={`whitespace-nowrap transition-colors cursor-pointer ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}
+            >
+              home
+            </button>
             <a href="#showcase" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>projects</a>
             <a href="#skills" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>tech stack</a>
             <Link href="/contact" className={`whitespace-nowrap transition-colors ${isDark ? 'text-zinc-400 hover:text-white' : 'text-zinc-600 hover:text-zinc-950'}`}>contact</Link>
@@ -434,13 +449,13 @@ export default function ProbalPortfolio() {
       </header>
 
       {/* --- MAIN EDITORIAL CONTAINER (CONSTRAINED TO MAX-W-3XL) --- */}
-      <main className="mx-auto max-w-3xl px-4 sm:px-8 py-6 sm:py-8 space-y-12 sm:space-y-16">
+      <main className="mx-auto max-w-3xl px-4 sm:px-8 pt-8 sm:pt-12 pb-12 sm:pb-16 space-y-12 sm:space-y-16">
         
         {/* --- HERO SECTION (STACKED PHOTO DECK & WARM INTRO) --- */}
-        <section id="about" className="flex flex-col items-start gap-8 md:flex-row-reverse md:items-center md:justify-between pt-2">
+        <section id="about" className="scroll-mt-28 sm:scroll-mt-32 flex flex-col items-start gap-8 md:flex-row-reverse md:items-center md:justify-between pt-2 sm:pt-4">
           
           {/* PHOTO STACK DECK (MATCHING SCREENSHOT) */}
-          <div className="relative grid h-[210px] w-[155px] sm:h-[235px] sm:w-[175px] place-items-center shrink-0 self-center md:self-auto md:mr-8 select-none">
+          <div className="relative grid h-[210px] w-[155px] sm:h-[235px] sm:w-[175px] place-items-center shrink-0 self-center md:self-auto md:mr-8 select-none my-2 sm:my-0">
             {/* Layer 3 - back tilted card */}
             <div 
               className="absolute h-[210px] w-[155px] sm:h-[235px] sm:w-[175px] rounded-2xl overflow-hidden border border-zinc-700/40 shadow-md pointer-events-none transition-transform duration-300"
@@ -463,7 +478,7 @@ export default function ProbalPortfolio() {
                 fill
                 priority
                 sizes="175px"
-                className="w-full h-full object-cover object-top select-none"
+                className="w-full h-full object-cover object-center select-none"
               />
             </div>
           </div>

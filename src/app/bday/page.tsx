@@ -73,10 +73,6 @@ const PLAYLIST_TRACKS: AudioTrack[] = [
   },
 ];
 
-// DEV / PREVIEW TOGGLE CONFIGURATION:
-// Set to false before sharing the final link with her, or tap '✕' in the UI
-const ENABLE_DEV_PREVIEW_TOGGLE = true;
-
 type PhaseType = "phase1" | "phase2" | "phase3";
 
 interface TimeRemaining {
@@ -229,10 +225,9 @@ function playCelebrationChime() {
 }
 
 export default function BirthdayPage() {
-  // Overridable phase for testing and live IST phase
-  const [overridePhase, setOverridePhase] = useState<PhaseType | null>(null);
-  const [devPreviewDismissed, setDevPreviewDismissed] = useState(false);
+  // Live IST phase and countdown state
   const [currentPhase, setCurrentPhase] = useState<PhaseType>("phase1");
+  const [revisitCelebration, setRevisitCelebration] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
     days: 0,
     hours: 0,
@@ -266,17 +261,8 @@ export default function BirthdayPage() {
   // Floating Reactions State
   const [floatingReactions, setFloatingReactions] = useState<FloatingReaction[]>([]);
 
-  // Active phase is either manual preview override or detected live phase
-  const activePhase = overridePhase || currentPhase;
-
-  // Toggle between countdown mode and active birthday celebration mode
-  const togglePreviewMode = () => {
-    if (activePhase === "phase2") {
-      setOverridePhase("phase1");
-    } else {
-      setOverridePhase("phase2");
-    }
-  };
+  // Active phase is the live IST phase (or revisit if viewing in future year)
+  const activePhase = revisitCelebration && currentPhase === "phase3" ? "phase2" : currentPhase;
 
   // Trigger grand celebratory confetti blast
   const fireConfetti = useCallback(() => {
@@ -553,72 +539,80 @@ export default function BirthdayPage() {
         ))}
       </div>
 
-      {/* Top Floating Dual-Vibe Music Player */}
-      <div className="fixed top-3 right-3 sm:top-4 sm:right-4 z-50 flex flex-col items-end gap-1.5">
-        <div className="flex items-center gap-1.5 p-1 sm:p-1.5 rounded-full backdrop-blur-2xl bg-white/90 shadow-xl shadow-pink-200/60 border-2 border-pink-200/90 transition-all">
-          {/* Play/Pause Button with Soundwave Bars */}
-          <button
-            onClick={toggleAudio}
-            type="button"
-            aria-label={isPlaying ? "Pause music" : "Play music"}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xs font-black shadow-md shadow-pink-300/60 transition-transform active:scale-95 cursor-pointer"
-          >
-            {isPlaying ? (
-              <>
-                <div className="flex items-center gap-0.5 h-3">
-                  <span className="w-0.5 h-3 bg-white rounded-full animate-pulse" />
-                  <span className="w-0.5 h-2 bg-white rounded-full animate-bounce" />
-                  <span className="w-0.5 h-3.5 bg-white rounded-full animate-pulse" />
-                </div>
-                <Pause className="w-3 h-3 fill-white" />
-                <span className="text-[11px]">Pause</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-3 h-3 fill-white" />
-                <span className="text-[11px]">Play</span>
-              </>
-            )}
-          </button>
+      {/* Sticky Top Header with Non-Overlapping Music Player */}
+      <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/85 border-b border-pink-200/80 shadow-xs">
+        <div className="max-w-md mx-auto px-3 py-2 flex items-center justify-between gap-2">
+          {/* Brand/Title */}
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-sm select-none">🌸</span>
+            <span className="font-black text-xs tracking-wider text-pink-700 truncate font-serif">
+              SOUMI&apos;S 20TH
+            </span>
+          </div>
 
-          {/* Vibe 1: Birthday Song */}
-          <button
-            onClick={() => switchTrack(0)}
-            type="button"
-            className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold transition-all cursor-pointer ${
-              selectedTrackIndex === 0
-                ? "bg-pink-100 text-pink-700 shadow-xs border border-pink-300"
-                : "text-slate-600 hover:text-pink-600 hover:bg-pink-50/70"
-            }`}
-          >
-            🎂 Birthday
-          </button>
+          {/* Dual Audio Controls */}
+          <div className="flex items-center gap-1 shrink-0">
+            {/* Play/Pause Button */}
+            <button
+              onClick={toggleAudio}
+              type="button"
+              aria-label={isPlaying ? "Pause music" : "Play music"}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[11px] font-black shadow-xs active:scale-95 cursor-pointer"
+            >
+              {isPlaying ? (
+                <>
+                  <div className="flex items-center gap-0.5 h-2.5">
+                    <span className="w-0.5 h-2.5 bg-white rounded-full animate-pulse" />
+                    <span className="w-0.5 h-1.5 bg-white rounded-full animate-bounce" />
+                    <span className="w-0.5 h-3 bg-white rounded-full animate-pulse" />
+                  </div>
+                  <Pause className="w-2.5 h-2.5 fill-white" />
+                  <span>Pause</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-2.5 h-2.5 fill-white" />
+                  <span>Music</span>
+                </>
+              )}
+            </button>
 
-          {/* Vibe 2: Meme Track */}
-          <button
-            onClick={() => switchTrack(1)}
-            type="button"
-            className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold transition-all cursor-pointer ${
-              selectedTrackIndex === 1
-                ? "bg-amber-100 text-amber-800 shadow-xs border border-amber-300"
-                : "text-slate-600 hover:text-amber-700 hover:bg-amber-50/70"
-            }`}
-          >
-            🤪 Meme Vibe
-          </button>
+            {/* Vibe 1: Birthday Song */}
+            <button
+              onClick={() => switchTrack(0)}
+              type="button"
+              className={`px-2 py-1 rounded-full text-[10px] font-extrabold transition-all cursor-pointer ${
+                selectedTrackIndex === 0
+                  ? "bg-pink-100 text-pink-700 border border-pink-300 shadow-xs"
+                  : "text-slate-600 hover:text-pink-600"
+              }`}
+            >
+              🎂 Song
+            </button>
+
+            {/* Vibe 2: Meme Track */}
+            <button
+              onClick={() => switchTrack(1)}
+              type="button"
+              className={`px-2 py-1 rounded-full text-[10px] font-extrabold transition-all cursor-pointer ${
+                selectedTrackIndex === 1
+                  ? "bg-amber-100 text-amber-800 border border-amber-300 shadow-xs"
+                  : "text-slate-600 hover:text-amber-700"
+              }`}
+            >
+              🤪 Meme
+            </button>
+          </div>
         </div>
 
         {/* Audio Missing Hint Toast */}
         {audioError && !isPlaying && (
-          <div className="w-64 text-[11px] p-2.5 bg-pink-100/95 border border-pink-300 rounded-2xl shadow-xl text-pink-900 text-center animate-fade-in backdrop-blur-md">
-            💡 Upload track for <span className="font-bold">{currentTrack.title}</span> at{" "}
-            <span className="font-mono text-[10px] bg-white/80 px-1 py-0.5 rounded font-bold">
-              {currentTrack.hint}
-            </span>
-            !
+          <div className="text-[10px] py-1 px-3 bg-rose-50 border-t border-rose-200 text-rose-800 text-center font-semibold">
+            💡 Add audio track for <span className="font-bold">{currentTrack.title}</span> at{" "}
+            <code className="bg-white/80 px-1 py-0.5 rounded font-mono">{currentTrack.hint}</code>
           </div>
         )}
-      </div>
+      </header>
 
       {/* Main Mobile Screen Wrapper */}
       <main className="relative z-10 max-w-md mx-auto px-4 sm:px-6 flex flex-col items-center">
@@ -863,13 +857,19 @@ export default function BirthdayPage() {
                       <stop offset="100%" stopColor="#92400e" />
                     </linearGradient>
 
-                    {/* Flame Radial Gradient */}
-                    <radialGradient id="flameCore" cx="50%" cy="65%" r="50%">
-                      <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="25%" stopColor="#fef08a" />
-                      <stop offset="60%" stopColor="#f97316" />
-                      <stop offset="100%" stopColor="#ef4444" />
-                    </radialGradient>
+                    {/* Luminous Fire Gradients */}
+                    <linearGradient id="flameOuterGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#ea580c" />
+                      <stop offset="30%" stopColor="#f97316" />
+                      <stop offset="70%" stopColor="#facc15" />
+                      <stop offset="100%" stopColor="#ffffff" />
+                    </linearGradient>
+
+                    <linearGradient id="flameInnerGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#fef08a" />
+                      <stop offset="55%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#ffffff" />
+                    </linearGradient>
                   </defs>
 
                   {/* 1. STAND */}
@@ -941,16 +941,19 @@ export default function BirthdayPage() {
                     </g>
                   ))}
 
-                  {/* 4. CROWN OF CANDLES */}
+                  {/* 4. CROWN OF CANDLES & TALL TEARDROP FLAMES */}
 
                   {/* Candle Left (Mint Pastel) */}
                   <g>
                     <rect x="114" y="80" width="4" height="28" rx="2" fill="#5eead4" stroke="#ccfbf1" strokeWidth="0.6" />
                     <line x1="114" y1="86" x2="118" y2="90" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
                     <line x1="114" y1="94" x2="118" y2="98" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
-                    <line x1="116" y1="80" x2="116" y2="74" stroke="#475569" strokeWidth="1" />
+                    <line x1="116" y1="80" x2="116" y2="74" stroke="#475569" strokeWidth="1.2" />
                     <g className={candlesBlown ? "opacity-0 transition-opacity duration-300" : "animate-flicker-1"}>
-                      <ellipse cx="116" cy="68" rx="3.5" ry="6.5" fill="url(#flameCore)" filter="url(#flameGlow)" />
+                      <circle cx="116" cy="65" r="10" fill="#fbbf24" fillOpacity="0.22" />
+                      <path d="M 116 56 C 121 63 121 74 116 74 C 111 74 111 63 116 56 Z" fill="url(#flameOuterGrad)" />
+                      <path d="M 116 62 C 119 67 119 73 116 73 C 113 73 113 67 116 62 Z" fill="url(#flameInnerGrad)" />
+                      <ellipse cx="116" cy="73.5" rx="1.5" ry="0.8" fill="#60a5fa" opacity="0.8" />
                     </g>
                     {candlesBlown && (
                       <path d="M116 74 Q112 67 117 60 Q121 54 116 48" stroke="#94a3b8" strokeWidth="1.2" fill="none" strokeDasharray="2 2" className="animate-smoke" />
@@ -962,9 +965,12 @@ export default function BirthdayPage() {
                     <rect x="128" y="75" width="4" height="33" rx="2" fill="#c084fc" stroke="#f3e8ff" strokeWidth="0.6" />
                     <line x1="128" y1="82" x2="132" y2="86" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
                     <line x1="128" y1="91" x2="132" y2="95" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
-                    <line x1="130" y1="75" x2="130" y2="69" stroke="#475569" strokeWidth="1" />
+                    <line x1="130" y1="75" x2="130" y2="69" stroke="#475569" strokeWidth="1.2" />
                     <g className={candlesBlown ? "opacity-0 transition-opacity duration-300" : "animate-flicker-2"}>
-                      <ellipse cx="130" cy="63" rx="3.5" ry="7" fill="url(#flameCore)" filter="url(#flameGlow)" />
+                      <circle cx="130" cy="59" r="11" fill="#fbbf24" fillOpacity="0.22" />
+                      <path d="M 130 48 C 135.5 56 136 69 130 69 C 124 69 124.5 56 130 48 Z" fill="url(#flameOuterGrad)" />
+                      <path d="M 130 55 C 133 60 133.5 68 130 68 C 126.5 68 127 60 130 55 Z" fill="url(#flameInnerGrad)" />
+                      <ellipse cx="130" cy="68.5" rx="1.5" ry="0.8" fill="#60a5fa" opacity="0.8" />
                     </g>
                     {candlesBlown && (
                       <path d="M130 69 Q126 62 131 55 Q135 49 130 43" stroke="#94a3b8" strokeWidth="1.2" fill="none" strokeDasharray="2 2" className="animate-smoke" />
@@ -979,12 +985,15 @@ export default function BirthdayPage() {
                         2
                       </text>
                     </g>
-                    <line x1="149" y1="66" x2="149" y2="59" stroke="#475569" strokeWidth="1.2" />
+                    <line x1="149" y1="66" x2="149" y2="58" stroke="#475569" strokeWidth="1.4" />
                     <g className={candlesBlown ? "opacity-0 transition-opacity duration-300" : "animate-flicker-1"}>
-                      <ellipse cx="149" cy="50" rx="5.5" ry="10" fill="url(#flameCore)" filter="url(#flameGlow)" />
+                      <circle cx="149" cy="45" r="16" fill="#fbbf24" fillOpacity="0.25" />
+                      <path d="M 149 33 C 157 43 157 58 149 58 C 141 58 141 43 149 33 Z" fill="url(#flameOuterGrad)" />
+                      <path d="M 149 41 C 153.5 47 154 57 149 57 C 144 57 144.5 47 149 41 Z" fill="url(#flameInnerGrad)" />
+                      <ellipse cx="149" cy="57.5" rx="2" ry="1" fill="#60a5fa" opacity="0.85" />
                     </g>
                     {candlesBlown && (
-                      <path d="M149 59 Q143 50 150 42 Q155 34 148 26" stroke="#94a3b8" strokeWidth="1.4" fill="none" className="animate-smoke" />
+                      <path d="M149 58 Q143 49 150 41 Q155 33 148 25" stroke="#94a3b8" strokeWidth="1.4" fill="none" className="animate-smoke" />
                     )}
                   </g>
 
@@ -996,12 +1005,15 @@ export default function BirthdayPage() {
                         0
                       </text>
                     </g>
-                    <line x1="171" y1="66" x2="171" y2="59" stroke="#475569" strokeWidth="1.2" />
+                    <line x1="171" y1="66" x2="171" y2="58" stroke="#475569" strokeWidth="1.4" />
                     <g className={candlesBlown ? "opacity-0 transition-opacity duration-300" : "animate-flicker-3"}>
-                      <ellipse cx="171" cy="50" rx="5.5" ry="10" fill="url(#flameCore)" filter="url(#flameGlow)" />
+                      <circle cx="171" cy="45" r="16" fill="#fbbf24" fillOpacity="0.25" />
+                      <path d="M 171 33 C 179 43 179 58 171 58 C 163 58 163 43 171 33 Z" fill="url(#flameOuterGrad)" />
+                      <path d="M 171 41 C 175.5 47 176 57 171 57 C 166 57 166.5 47 171 41 Z" fill="url(#flameInnerGrad)" />
+                      <ellipse cx="171" cy="57.5" rx="2" ry="1" fill="#60a5fa" opacity="0.85" />
                     </g>
                     {candlesBlown && (
-                      <path d="M171 59 Q165 50 172 42 Q177 34 170 26" stroke="#94a3b8" strokeWidth="1.4" fill="none" className="animate-smoke" />
+                      <path d="M171 58 Q165 49 172 41 Q177 33 170 25" stroke="#94a3b8" strokeWidth="1.4" fill="none" className="animate-smoke" />
                     )}
                   </g>
 
@@ -1010,9 +1022,12 @@ export default function BirthdayPage() {
                     <rect x="188" y="75" width="4" height="33" rx="2" fill="#f472b6" stroke="#fdf2f8" strokeWidth="0.6" />
                     <line x1="188" y1="82" x2="192" y2="86" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
                     <line x1="188" y1="91" x2="192" y2="95" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
-                    <line x1="190" y1="75" x2="190" y2="69" stroke="#475569" strokeWidth="1" />
+                    <line x1="190" y1="75" x2="190" y2="69" stroke="#475569" strokeWidth="1.2" />
                     <g className={candlesBlown ? "opacity-0 transition-opacity duration-300" : "animate-flicker-2"}>
-                      <ellipse cx="190" cy="63" rx="3.5" ry="7" fill="url(#flameCore)" filter="url(#flameGlow)" />
+                      <circle cx="190" cy="59" r="11" fill="#fbbf24" fillOpacity="0.22" />
+                      <path d="M 190 48 C 195.5 56 196 69 190 69 C 184 69 184.5 56 190 48 Z" fill="url(#flameOuterGrad)" />
+                      <path d="M 190 55 C 193 60 193.5 68 190 68 C 186.5 68 187 60 190 55 Z" fill="url(#flameInnerGrad)" />
+                      <ellipse cx="190" cy="68.5" rx="1.5" ry="0.8" fill="#60a5fa" opacity="0.8" />
                     </g>
                     {candlesBlown && (
                       <path d="M190 69 Q186 62 191 55 Q195 49 190 43" stroke="#94a3b8" strokeWidth="1.2" fill="none" strokeDasharray="2 2" className="animate-smoke" />
@@ -1024,9 +1039,12 @@ export default function BirthdayPage() {
                     <rect x="202" y="80" width="4" height="28" rx="2" fill="#fb923c" stroke="#ffedd5" strokeWidth="0.6" />
                     <line x1="202" y1="86" x2="206" y2="90" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
                     <line x1="202" y1="94" x2="206" y2="98" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" />
-                    <line x1="204" y1="80" x2="204" y2="74" stroke="#475569" strokeWidth="1" />
+                    <line x1="204" y1="80" x2="204" y2="74" stroke="#475569" strokeWidth="1.2" />
                     <g className={candlesBlown ? "opacity-0 transition-opacity duration-300" : "animate-flicker-1"}>
-                      <ellipse cx="204" cy="68" rx="3.5" ry="6.5" fill="url(#flameCore)" filter="url(#flameGlow)" />
+                      <circle cx="204" cy="65" r="10" fill="#fbbf24" fillOpacity="0.22" />
+                      <path d="M 204 56 C 209 63 209 74 204 74 C 199 74 199 63 204 56 Z" fill="url(#flameOuterGrad)" />
+                      <path d="M 204 62 C 207 67 207 73 204 73 C 201 73 201 67 204 62 Z" fill="url(#flameInnerGrad)" />
+                      <ellipse cx="204" cy="73.5" rx="1.5" ry="0.8" fill="#60a5fa" opacity="0.8" />
                     </g>
                     {candlesBlown && (
                       <path d="M204 74 Q200 67 205 60 Q209 54 204 48" stroke="#94a3b8" strokeWidth="1.2" fill="none" strokeDasharray="2 2" className="animate-smoke" />
@@ -1416,7 +1434,7 @@ export default function BirthdayPage() {
             </div>
 
             <button
-              onClick={() => setOverridePhase("phase2")}
+              onClick={() => setRevisitCelebration(true)}
               type="button"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold shadow-lg shadow-pink-300 hover:shadow-xl transition-all active:scale-95 cursor-pointer"
             >
@@ -1457,49 +1475,7 @@ export default function BirthdayPage() {
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* DEV / PREVIEW TOGGLE BUTTON                                                */}
-      {/* Set ENABLE_DEV_PREVIEW_TOGGLE = false at the top of this file to remove,  */}
-      {/* or tap '✕' to temporarily dismiss it while testing.                       */}
-      {/* ========================================================================= */}
-      {ENABLE_DEV_PREVIEW_TOGGLE && !devPreviewDismissed && (
-        <div className="fixed bottom-2 right-2 sm:bottom-3 sm:right-3 z-50 flex items-center gap-1.5 shadow-2xl backdrop-blur-md bg-slate-950/85 hover:bg-slate-950 text-white rounded-full p-1 pl-3.5 border border-slate-700/80 transition-all text-xs font-semibold">
-          <button
-            onClick={togglePreviewMode}
-            type="button"
-            className="flex items-center gap-2 cursor-pointer py-1 pr-1 active:scale-95 transition-transform"
-            aria-label="Toggle preview mode"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
-            </span>
-            <span className="text-[11px] tracking-wide font-bold">
-              {activePhase === "phase2" ? "Preview: Countdown Mode ⏳" : "Preview: Birthday Mode 🎉"}
-            </span>
-          </button>
-
-          {overridePhase !== null && (
-            <button
-              onClick={() => setOverridePhase(null)}
-              type="button"
-              title="Reset to Live IST"
-              className="text-[10px] text-slate-400 hover:text-white px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 transition-colors cursor-pointer"
-            >
-              Reset
-            </button>
-          )}
-
-          <button
-            onClick={() => setDevPreviewDismissed(true)}
-            type="button"
-            title="Hide button (Set ENABLE_DEV_PREVIEW_TOGGLE = false in code to remove permanently)"
-            className="w-5 h-5 flex items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-xs ml-0.5 cursor-pointer"
-          >
-            ✕
-          </button>
-        </div>
-      )}
+      {/* Preview mode toggle removed - ready for live 28th midnight reveal */}
 
       {/* Global Animation Keyframes Helper */}
       <style jsx global>{`
@@ -1537,37 +1513,34 @@ export default function BirthdayPage() {
 
         @keyframes flicker1 {
           0%, 100% {
-            transform: scale(1) rotate(-1deg);
-            opacity: 0.95;
+            transform: scale(1, 1) skewX(0deg);
+            opacity: 0.96;
           }
           50% {
-            transform: scale(1.15) rotate(2deg);
+            transform: scale(1.06, 1.15) skewX(1.8deg);
             opacity: 1;
-            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 1));
           }
         }
 
         @keyframes flicker2 {
           0%, 100% {
-            transform: scale(1.05) rotate(1.5deg);
+            transform: scale(1.03, 1.08) skewX(1.2deg);
             opacity: 1;
           }
           50% {
-            transform: scale(0.92) rotate(-1deg);
-            opacity: 0.9;
-            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8));
+            transform: scale(0.98, 1.02) skewX(-1.8deg);
+            opacity: 0.94;
           }
         }
 
         @keyframes flicker3 {
           0%, 100% {
-            transform: scale(0.95) rotate(-2deg);
-            opacity: 0.92;
+            transform: scale(0.98, 1.02) skewX(-1.2deg);
+            opacity: 0.94;
           }
           50% {
-            transform: scale(1.18) rotate(1deg);
+            transform: scale(1.06, 1.16) skewX(2.2deg);
             opacity: 1;
-            filter: drop-shadow(0 0 12px rgba(251, 191, 36, 1));
           }
         }
 
@@ -1602,14 +1575,20 @@ export default function BirthdayPage() {
         }
 
         .animate-flicker-1 {
+          transform-box: fill-box;
+          transform-origin: 50% 100%;
           animation: flicker1 1.1s ease-in-out infinite;
         }
 
         .animate-flicker-2 {
+          transform-box: fill-box;
+          transform-origin: 50% 100%;
           animation: flicker2 1.3s ease-in-out infinite 0.2s;
         }
 
         .animate-flicker-3 {
+          transform-box: fill-box;
+          transform-origin: 50% 100%;
           animation: flicker3 0.9s ease-in-out infinite 0.4s;
         }
 
