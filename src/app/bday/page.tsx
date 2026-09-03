@@ -228,6 +228,24 @@ export default function BirthdayPage() {
   // Live IST phase and countdown state
   const [currentPhase, setCurrentPhase] = useState<PhaseType>("phase1");
   const [revisitCelebration, setRevisitCelebration] = useState(false);
+  const [secretPreview, setSecretPreview] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Check URL query parameter or hash on mount (e.g. /bday?preview=bday or /bday#preview)
+  useEffect(() => {
+    setMounted(true);
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isParamPreview = urlParams.get("preview") === "bday" || urlParams.get("preview") === "28";
+      const isHashPreview = window.location.hash === "#preview";
+      if (isParamPreview || isHashPreview) {
+        setSecretPreview(true);
+      }
+    }
+  }, []);
+
+
+
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
     days: 0,
     hours: 0,
@@ -261,8 +279,12 @@ export default function BirthdayPage() {
   // Floating Reactions State
   const [floatingReactions, setFloatingReactions] = useState<FloatingReaction[]>([]);
 
-  // Active phase is the live IST phase (or revisit if viewing in future year)
-  const activePhase = revisitCelebration && currentPhase === "phase3" ? "phase2" : currentPhase;
+  // Active phase: secret preview override OR live IST phase (or revisit if viewing in future year)
+  const activePhase = secretPreview
+    ? "phase2"
+    : revisitCelebration && currentPhase === "phase3"
+    ? "phase2"
+    : currentPhase;
 
   // Trigger grand celebratory confetti blast
   const fireConfetti = useCallback(() => {
@@ -493,7 +515,10 @@ export default function BirthdayPage() {
   const totalReasonsUnlocked = Object.values(unlockedReasons).filter(Boolean).length;
 
   return (
-    <div className="relative min-h-dvh w-full overflow-x-hidden bg-gradient-to-b from-rose-100/70 via-pink-50/90 to-purple-100/70 text-slate-800 font-sans selection:bg-pink-300 selection:text-pink-900 pb-36 pt-4">
+    <div
+      suppressHydrationWarning
+      className="relative min-h-dvh w-full overflow-x-hidden bg-gradient-to-b from-rose-100/70 via-pink-50/90 to-purple-100/70 text-slate-800 font-sans selection:bg-pink-300 selection:text-pink-900 pb-36 pt-4"
+    >
       {/* Dynamic Audio Element pointing to current selected track */}
       <audio
         ref={audioRef}
@@ -1474,147 +1499,6 @@ export default function BirthdayPage() {
           ))}
         </div>
       </div>
-
-      {/* Preview mode toggle removed - ready for live 28th midnight reveal */}
-
-      {/* Global Animation Keyframes Helper */}
-      <style jsx global>{`
-        @keyframes floatDrift {
-          0% {
-            transform: translateY(0) rotate(0deg) scale(0.9);
-            opacity: 0;
-          }
-          15% {
-            opacity: 0.75;
-          }
-          85% {
-            opacity: 0.75;
-          }
-          100% {
-            transform: translateY(-105vh) rotate(360deg) scale(1.1);
-            opacity: 0;
-          }
-        }
-
-        @keyframes reactionFloat {
-          0% {
-            transform: translateY(0) scale(0.7) rotate(0deg);
-            opacity: 1;
-          }
-          50% {
-            transform: translateY(-45vh) scale(1.3) rotate(-15deg);
-            opacity: 0.9;
-          }
-          100% {
-            transform: translateY(-85vh) scale(1.6) rotate(20deg);
-            opacity: 0;
-          }
-        }
-
-        @keyframes flicker1 {
-          0%, 100% {
-            transform: scale(1, 1) skewX(0deg);
-            opacity: 0.96;
-          }
-          50% {
-            transform: scale(1.06, 1.15) skewX(1.8deg);
-            opacity: 1;
-          }
-        }
-
-        @keyframes flicker2 {
-          0%, 100% {
-            transform: scale(1.03, 1.08) skewX(1.2deg);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(0.98, 1.02) skewX(-1.8deg);
-            opacity: 0.94;
-          }
-        }
-
-        @keyframes flicker3 {
-          0%, 100% {
-            transform: scale(0.98, 1.02) skewX(-1.2deg);
-            opacity: 0.94;
-          }
-          50% {
-            transform: scale(1.06, 1.16) skewX(2.2deg);
-            opacity: 1;
-          }
-        }
-
-        @keyframes smokePuff {
-          0% {
-            transform: translateY(0) scale(0.6);
-            opacity: 0.9;
-          }
-          100% {
-            transform: translateY(-20px) scale(1.4);
-            opacity: 0;
-          }
-        }
-
-        @keyframes spinSlow {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-
-        .animate-float-drift {
-          animation-name: floatDrift;
-          animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          animation-iteration-count: infinite;
-        }
-
-        .animate-reaction-float {
-          animation: reactionFloat 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        .animate-flicker-1 {
-          transform-box: fill-box;
-          transform-origin: 50% 100%;
-          animation: flicker1 1.1s ease-in-out infinite;
-        }
-
-        .animate-flicker-2 {
-          transform-box: fill-box;
-          transform-origin: 50% 100%;
-          animation: flicker2 1.3s ease-in-out infinite 0.2s;
-        }
-
-        .animate-flicker-3 {
-          transform-box: fill-box;
-          transform-origin: 50% 100%;
-          animation: flicker3 0.9s ease-in-out infinite 0.4s;
-        }
-
-        .animate-smoke {
-          animation: smokePuff 1s ease-out forwards;
-        }
-
-        .animate-spin-slow {
-          animation: spinSlow 8s linear infinite;
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }
