@@ -619,7 +619,7 @@ export default function ProbalPortfolio() {
                       <div className={`absolute -left-[45px] sm:-left-16 top-0.5 flex items-center justify-center rounded-full border shadow-md w-10 h-10 sm:w-12 sm:h-12 overflow-hidden ${
                         isDark ? 'bg-zinc-900 border-zinc-700 text-white' : 'bg-white border-zinc-300 text-zinc-900'
                       }`}>
-                        <Cpu size={20} />
+                        {proj.icon === 'zap' ? <Zap size={20} className="text-white" /> : <Cpu size={20} />}
                       </div>
 
                       <div className="flex flex-1 flex-col justify-start gap-1.5">
@@ -630,7 +630,21 @@ export default function ProbalPortfolio() {
                           <span className="text-xs font-mono text-emerald-400 font-semibold">{proj.status}</span>
                         </div>
 
-                        <p className="text-xs font-mono text-zinc-400">{proj.tech}</p>
+                        {/* USED SKILLS / TECH STACK IN MINIMAL RECTANGLES */}
+                        <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                          {proj.tech.split('·').map((tech, idx) => (
+                            <span
+                              key={idx}
+                              className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono border transition-colors ${
+                                isDark
+                                  ? 'bg-zinc-900/90 border-zinc-800 text-zinc-300'
+                                  : 'bg-zinc-100 border-zinc-200 text-zinc-700'
+                              }`}
+                            >
+                              {tech.trim()}
+                            </span>
+                          ))}
+                        </div>
 
                         {/* PROJECT BULLET POINTS (RATHER THAN PLAIN TEXT BLOCK) */}
                         <ul className="mt-2 list-outside list-disc pl-4 space-y-1.5 text-xs sm:text-sm text-zinc-400 leading-relaxed">
@@ -1010,7 +1024,20 @@ export default function ProbalPortfolio() {
                 <div>
                   <span className="text-xs font-mono text-zinc-400 uppercase font-semibold">Technical Specifications</span>
                   <h3 className="text-2xl font-bold tracking-tight mt-1">{selectedProject.title}</h3>
-                  <p className="text-xs text-zinc-500 font-mono mt-0.5">{selectedProject.tech}</p>
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                    {selectedProject.tech.split('·').map((tech, idx) => (
+                      <span
+                        key={idx}
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono border ${
+                          isDark
+                            ? 'bg-zinc-800/80 border-zinc-700 text-zinc-300'
+                            : 'bg-zinc-100 border-zinc-200 text-zinc-700'
+                        }`}
+                      >
+                        {tech.trim()}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 {/* PINOUT MAPPINGS */}
@@ -1063,24 +1090,35 @@ export default function ProbalPortfolio() {
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center justify-end gap-2">
-                  <button
-                    onClick={() => setSelectedProject(null)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+                <div className="pt-2 flex flex-wrap items-center justify-end gap-2">
+                  <a
+                    href={selectedProject.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold border flex items-center gap-1.5 transition-colors ${
+                      isDark ? 'border-zinc-700 bg-zinc-800 text-zinc-200 hover:bg-zinc-700' : 'border-zinc-300 bg-zinc-100 text-zinc-800 hover:bg-zinc-200'
+                    }`}
                   >
-                    Close Specs
-                  </button>
+                    <Github size={13} />
+                    <span>View Repository</span>
+                  </a>
                   {selectedProject.liveUrl && (
                     <a
                       href={selectedProject.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-zinc-200 text-zinc-950 font-semibold shadow flex items-center gap-1.5 transition-colors"
+                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-zinc-200 text-zinc-950 shadow flex items-center gap-1.5 transition-colors"
                     >
                       <span>Open Live Project</span>
                       <ExternalLink size={12} />
                     </a>
                   )}
+                  <button
+                    onClick={() => setSelectedProject(null)}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-700 hover:bg-zinc-800 text-zinc-200 cursor-pointer"
+                  >
+                    Close Specs
+                  </button>
                 </div>
               </div>
             </motion.div>

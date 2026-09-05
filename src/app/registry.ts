@@ -22,6 +22,8 @@ export interface ProjectItem {
   manifest: string[];
   description: string;
   highlights?: string[];
+  role?: string;
+  icon?: string;
   architecture: string;
   bom: { component: string; spec: string; qty: number; reason: string }[];
   pinouts: { pin: string; target: string; bus: string }[];
@@ -29,6 +31,38 @@ export interface ProjectItem {
 }
 
 export const PROJECTS: ProjectItem[] = [
+  {
+    id: "diyledsign-sparkcontrol",
+    title: "Diy Led Sign Spark Control",
+    tech: "ESP-NOW · FastLED · FreeRTOS · CIE 1931 · C/C++",
+    repo: "https://github.com/Probal-Khanra/diyledsign-sparkcontrol",
+    manifest: ["2x ESP32 Dev Modules", "8-LED WS2812B NeoPixel Ring", "0.91\" I2C SSD1306 OLED", "6x Tactile Buttons", "8x12cm Perfboard", "ESP-NOW", "FastLED", "FreeRTOS"],
+    status: "Completed",
+    icon: "zap",
+    description: "Sub-5ms wireless LED signage and custom handheld remote system built with dual ESP32s over connectionless ESP-NOW, featuring non-linear CIE 1931 lightness dimming and an SSD1306 OLED telemetry display.",
+    highlights: [
+      "Zero-Lag ESP-NOW: Sub-5ms wireless communication using a 6-byte packed state struct for router-free remote control.",
+      "Perceptual CIE 1931 Dimming: Non-linear lightness curve matching human vision, cutting power draw by 78.5%.",
+      "Thermal & RF Tuning: Downclocked ESP32 to 80 MHz and capped RF power at 8.5 dBm to eliminate heat in enclosed chassis.",
+      "Point-to-Point Soldered Remote: Hand-soldered perfboard prototype with 6 tactile buttons and an SSD1306 OLED telemetry display."
+    ],
+    architecture: "Distributed wireless architecture utilizing connectionless ESP-NOW protocol for sub-5ms peer-to-peer RF communication between the handheld remote transmitter and signage receiver. The transmitter samples a debounced 6-button matrix, renders system status and lighting modes on an SSD1306 OLED via I2C, and broadcasts a 6-byte packed state struct. The receiver listens continuously, maps brightness through cubic CIE 1931 lightness transfer functions to match human visual perception, and drives the WS2812B RGB NeoPixel ring via FastLED without Wi-Fi router dependency.",
+    bom: [
+      { component: "ESP32 Dev Module (Transmitter)", spec: "Handheld Remote MCU (ESP-NOW Broadcast, 80MHz CPU)", qty: 1, reason: "Handles 6-button debouncing, I2C OLED display rendering, and power-optimized RF packet transmission." },
+      { component: "ESP32 Dev Module (Receiver)", spec: "LED Controller Node (ESP-NOW Listen, FastLED Pipeline)", qty: 1, reason: "Decodes 6-byte packed state payloads and runs non-blocking lighting animation loops." },
+      { component: "WS2812B NeoPixel Ring", spec: "8-LED Addressable RGB Ring (5V Logic)", qty: 1, reason: "Delivers 9 dynamic lighting effects including candle flicker, breathing pulse, strobe, and rainbow." },
+      { component: "0.91\" I2C OLED Display", spec: "128x32 Monochrome SSD1306 (I2C Bus)", qty: 1, reason: "Provides handheld real-time telemetry, mode indicator, and brightness feedback." },
+      { component: "Tactile Button Matrix", spec: "6x Momentary Push Buttons (Hardware Pull-Ups)", qty: 6, reason: "Dedicated physical inputs for mode cycling, brightness stepping, and toggle controls." },
+      { component: "High-Density Perfboard", spec: "8x12cm Double-Sided Prototyping Board", qty: 1, reason: "Point-to-point soldered durable chassis layout with mechanical strain relief." }
+    ],
+    pinouts: [
+      { pin: "GPIO 21 (SDA)", target: "0.91\" SSD1306 OLED SDA", bus: "I2C" },
+      { pin: "GPIO 22 (SCL)", target: "0.91\" SSD1306 OLED SCL", bus: "I2C" },
+      { pin: "GPIO 18 (Data Out)", target: "WS2812B NeoPixel DIN", bus: "Single-Wire FastLED" },
+      { pin: "GPIO 25, 26, 27, 32, 33, 34", target: "6x Tactile Push Buttons", bus: "Digital Input (Pull-Up)" },
+      { pin: "2.4GHz RF (Channel 1)", target: "ESP-NOW Peer MAC Broadcast", bus: "Connectionless RF" }
+    ]
+  },
   {
     id: "smart-air-quality",
     title: "Smart Air Quality Monitoring Unit",
@@ -39,10 +73,10 @@ export const PROJECTS: ProjectItem[] = [
     status: "Completed",
     description: "A portable, battery-powered ambient air monitor built with an ESP32. It measures airborne particulates (PM1.0, PM2.5, PM10), carbon monoxide, combustible gases, and climate conditions, streaming live readings to a real-time web dashboard.",
     highlights: [
-      "Engineered a portable ambient air monitor powered by an ESP32 dual-core MCU and internal 18650 Li-ion cell with IP5306 power management.",
-      "Samples laser particle counters (PM1.0, PM2.5, PM10) over UART, along with MQ-2 & MQ-7 gas sensors via calibrated analog ADC channels.",
-      "Streams real-time JSON telemetry over Wi-Fi to Firebase Realtime DB every 30s and logs 5-minute historical datasets to Google Sheets via serverless Google Apps Script.",
-      "Renders live environmental metrics locally on an I2C HD44780 LCD display and remotely on a responsive React web dashboard."
+      "Multi-Sensor Acquisition: Samples laser particulate matter (PM1.0/2.5/10) via UART and gas levels (MQ-2/MQ-7) via calibrated ADC.",
+      "Cloud & Local Telemetry: Streams real-time JSON packets to Firebase every 30s and logs datasets to Google Sheets.",
+      "Dual Visualization: Renders environmental metrics on an on-device I2C 16x2 LCD and a responsive React web dashboard.",
+      "Portable Power: Integrated IP5306 power SoC with 18650 Li-ion cell management for standalone field deployment."
     ],
     architecture: "The ESP32 runs non-blocking firmware sampling the PMS5003 laser sensor over UART, gas sensors via calibrated analog ADC channels, and climate metrics over I2C. Telemetry is transmitted over Wi-Fi to Firebase Realtime DB every 30 seconds, and a serverless Google Apps Script logs 5-minute historical records to Google Sheets. The unit operates portably via an internal 18650 Li-ion cell managed by an IP5306 power SoC.",
     bom: [
